@@ -1,0 +1,17 @@
+{
+  "name": "js-simulation-project",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node src/simulation-all-in-one.js",
+    "simulate": "node src/simulation-all-in-one.js",
+    "debug": "node debug.js",
+    "debug-long": "node -e \"import('./debug.js').then(m => m.debugSimulation(20))\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
