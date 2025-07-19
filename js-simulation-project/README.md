@@ -20,19 +20,19 @@ Bu proje, hayvanların yaşam döngüsünü, avlanmayı, çiftleşmeyi ve popül
 ### 💕 Çiftleşme Sistemi
 - Aynı tür, farklı cinsiyet gerekli
 - 3 birimlik mesafe içinde olmalı
-- Enerji minimum 30 olmalı
-- %30 çiftleşme şansı (kontrollü büyüme)
+- Enerji minimum 10 olmalı
+- %15 çiftleşme şansı (kontrollü büyüme)
 - Tavuk-Horoz çiftleşmesi özel: %70 tavuk, %30 horoz doğar
 
 ### ⚡ Enerji ve Hareket
 - Her hayvan 100 enerji ile başlar
-- Hareket halinde enerji azalır (0.5/adım)
+- Hareket halinde %10 ihtimalle enerji azalır (1/adım)
 - Enerji 0 olunca hayvan ölür
 - Her türün farklı hareket mesafesi var
 
 ### 🦠 Afet/Hastalık Sistemi
-- Popülasyon 200'ü geçerse hastalık başlar
-- %25 oranında rastgele ölüm
+- Popülasyon 100'ü geçerse hastalık başlar
+- %20 oranında rastgele ölüm
 - Ekosistemi dengede tutar
 
 ## 🚀 Kurulum ve Çalıştırma
@@ -41,11 +41,8 @@ Bu proje, hayvanların yaşam döngüsünü, avlanmayı, çiftleşmeyi ve popül
 # Proje klasörüne git
 cd js-simulation-project
 
-# Normal simülasyon (1000 adım)
-npm start
-
-# Uzun debug (20 adım)
-npm run debug-long
+# Simülasyonu çalıştır
+node src/simulation-all-in-one.js
 ```
 
 ## 🔧 Dosya Yapısı
@@ -54,8 +51,6 @@ npm run debug-long
 js-simulation-project/
 ├── src/
 │   └── simulation-all-in-one.js    # Ana simülasyon kodu
-├── test.js                         # Test dosyası
-├── debug.js                        # Debug ve analiz araçları
 ├── package.json                    # NPM konfigürasyonu
 └── README.md                       # Bu dosya
 ```
@@ -64,6 +59,29 @@ js-simulation-project/
 
 Simülasyon şu istatistikleri takip eder:
 - **bornCount**: Doğan hayvan sayısı
-- **hunterKills**: Avcının öldürdüğü hayvan sayısı
-- **lionKills**: Aslanların öldürdüğü hayvan sayısı
-- **wolfKills**: Kurtların öldürdüğü hayvan sayısı
+- **hunterKillCount**: Avcının öldürdüğü hayvan sayısı
+- **lionKillCount**: Aslanların öldürdüğü hayvan sayısı
+- **wolfKillCount**: Kurtların öldürdüğü hayvan sayısı
+
+## 🎮 Simülasyon Parametreleri
+
+### Hareket Mesafeleri
+- Koyun/İnek: 2 birim
+- Tavuk/Horoz: 1 birim  
+- Kurt: 3 birim
+- Aslan: 4 birim
+- Avcı: 1 birim
+
+### Avlama Mesafeleri
+- Kurt: 4 birim
+- Aslan: 5 birim
+- Avcı: 8 birim (görüş mesafesi)
+
+### Başlangıç Popülasyonu
+- 30 Koyun (15 erkek, 15 dişi)
+- 10 İnek (5 erkek, 5 dişi)
+- 10 Tavuk (dişi)
+- 10 Horoz (erkek)
+- 10 Kurt (5 erkek, 5 dişi)
+- 8 Aslan (4 erkek, 4 dişi)
+- 1 Avcı
