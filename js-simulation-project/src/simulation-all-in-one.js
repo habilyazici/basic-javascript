@@ -1,533 +1,533 @@
-// ==================== SABİTLER (CONSTANTS) ====================
-// CONSTANTS = Sabitler: Değişmeyecek değerleri burada tanımlıyoruz
-// Bu sayılar ve yazılar program boyunca aynı kalacak
+// ==================== CONSTANTS ====================
+// Constants: Values that won't change throughout the program
+// These numbers and strings will remain the same throughout program execution
 
 /**
- * Hayvan Türleri - Simülasyonda kullanılan tüm hayvan türlerinin tanımları
- * Bu sabitler kod boyunca tutarlılık sağlamak için kullanılır
+ * Animal Types - Definitions of all animal types used in the simulation
+ * These constants are used to maintain consistency throughout the code
  * 
- * AÇIKLAMA: Object (nesne) yapısı - {} içine anahtar:değer çiftleri yazıyoruz
- * Örnek: KOYUN: 'koyun' - KOYUN anahtarının değeri 'koyun' string'i
+ * EXPLANATION: Object structure - we write key:value pairs inside {}
+ * Example: SHEEP: 'sheep' - the SHEEP key has the value 'sheep' string
  */
-export const HAYVAN_TURLERI = {
-    KOYUN: 'koyun',        // Otçul, savunmasız hayvan - sadece ot yer
-    INEK: 'inek',          // Otçul, büyük hayvan - sadece ot yer ama büyük
-    TAVUK: 'tavuk',        // Omnivore, küçük hayvan (dişi) - hem ot hem et yer
-    HOROZ: 'horoz',        // Omnivore, küçük hayvan (erkek) - hem ot hem et yer
-    KURT: 'kurt',          // Etçil avcı - sadece et yer, diğer hayvanları avlar
-    ASLAN: 'aslan'         // Etçil avcı - sadece et yer, en güçlü avcı
+export const ANIMAL_TYPES = {
+    SHEEP: 'sheep',        // Herbivore, defenseless animal - only eats grass
+    COW: 'cow',            // Herbivore, large animal - only eats grass but large
+    CHICKEN: 'chicken',    // Omnivore, small animal (female) - eats both plants and meat
+    ROOSTER: 'rooster',    // Omnivore, small animal (male) - eats both plants and meat
+    WOLF: 'wolf',          // Carnivore predator - only eats meat, hunts other animals
+    LION: 'lion'           // Carnivore predator - only eats meat, strongest predator
 };
-// export = Bu değişkeni başka dosyalarda da kullanabilmek için dışarı açıyoruz
-// const = Değişmez değişken (sabit) tanımlama kelimesi
+// export = Makes this variable available for use in other files
+// const = Immutable variable (constant) declaration keyword
 
 /**
- * Avcı Türü - İnsan avcısı
- * AÇIKLAMA: String (yazı) türünde bir sabit
- * Bu değişken insan avcısını temsil ediyor
+ * Hunter Type - Human hunter
+ * EXPLANATION: A constant of string type
+ * This variable represents the human hunter
  */
-export const AVCI_TURU = 'avci';
+export const HUNTER_TYPE = 'hunter';
 
 /**
- * Avlanma Mesafeleri - Her avcı türünün ne kadar uzaktan avlanabileceği
- * Daha büyük avcılar daha uzak mesafeden avlanabilir
+ * Hunting Distances - How far each predator type can hunt from
+ * Larger predators can hunt from greater distances
  * 
- * AÇIKLAMA: Object içinde anahtar olarak hayvan türü, değer olarak mesafe
- * [HAYVAN_TURLERI.KURT] = Köşeli parantez ile object anahtarı oluşturma
- * Sayı değerleri piksel cinsinden mesafe
+ * EXPLANATION: Object with animal type as key and distance as value
+ * [ANIMAL_TYPES.WOLF] = Creates object key using square brackets
+ * Number values represent distance in pixels
  */
-export const AVLANMA_MESAFELERI = {
-    [HAYVAN_TURLERI.KURT]: 4,    // Kurt 4 birim mesafeden avlanabilir
-    [HAYVAN_TURLERI.ASLAN]: 5    // Aslan 5 birim mesafeden avlanabilir
-};
-
-/**
- * Çiftleşme Mesafesi - Hayvanların çiftleşebilmesi için aralarında olması gereken maksimum mesafe
- * AÇIKLAMA: Sadece bir sayı sabit. Bu mesafeden yakın hayvanlar çiftleşebilir
- */
-export const CIFTLESME_MESAFESI = 3;
-
-/**
- * Hareket Mesafeleri - Her hayvan türünün bir adımda ne kadar hareket edebileceği
- * Büyük hayvanlar genelde daha hızlı hareket eder
- */
-export const HAREKET_MESAFELERI = {
-    [HAYVAN_TURLERI.KOYUN]: 2,     // Koyun orta hızda hareket eder
-    [HAYVAN_TURLERI.INEK]: 2,      // İnek orta hızda hareket eder
-    [HAYVAN_TURLERI.TAVUK]: 1,     // Tavuk yavaş hareket eder
-    [HAYVAN_TURLERI.HOROZ]: 1,     // Horoz yavaş hareket eder
-    [HAYVAN_TURLERI.KURT]: 3,      // Kurt hızlı hareket eder
-    [HAYVAN_TURLERI.ASLAN]: 4,     // Aslan en hızlı hareket eder
-    [AVCI_TURU]: 1                 // Avcı yavaş ama stratejik hareket eder
+export const HUNTING_DISTANCES = {
+    [ANIMAL_TYPES.WOLF]: 4,    // Wolf can hunt from 4 units away
+    [ANIMAL_TYPES.LION]: 5     // Lion can hunt from 5 units away
 };
 
-// ==================== YARDIMCI FONKSİYONLAR (HELPER FUNCTIONS) ====================
-// FUNCTIONS = Fonksiyonlar: Tekrar kullanabileceğimiz kod blokları
-// Her fonksiyon belirli bir işi yapar ve sonuç döndürür
+/**
+ * Mating Distance - Maximum distance between animals for mating to occur
+ * EXPLANATION: Just a number constant. Animals within this distance can mate
+ */
+export const MATING_DISTANCE = 3;
 
 /**
- * Rastgele Pozisyon Üretici
- * Simülasyon alanında (500x500) rastgele bir koordinat üretir
- * 
- * AÇIKLAMA: function kelimesi ile fonksiyon tanımlıyoruz
- * () içi parametre - bu fonksiyon parametre almıyor
- * {} içi fonksiyonun yapacağı işler
- * return = fonksiyonun döndüreceği değer
- * 
- * @returns {number} 0-499 arası rastgele sayı
+ * Movement Distances - How far each animal type can move in one step
+ * Larger animals generally move faster
  */
-export function rastgelePozisyonAl() {
-    // Math.random() = 0 ile 1 arası rastgele ondalık sayı üretir (örn: 0.7234)
-    // Math.random() * 500 = 0 ile 500 arası ondalık sayı (örn: 361.7)
-    // Math.floor() = Ondalık sayıyı aşağı yuvarlar (örn: 361.7 -> 361)
-    // Sonuç: 0-499 arası tam sayı
-    return Math.floor(Math.random() * 500); // 0-499 arası pozisyon (500x500 alan)
+export const MOVEMENT_DISTANCES = {
+    [ANIMAL_TYPES.SHEEP]: 2,     // Sheep moves at medium speed
+    [ANIMAL_TYPES.COW]: 2,       // Cow moves at medium speed
+    [ANIMAL_TYPES.CHICKEN]: 1,   // Chicken moves slowly
+    [ANIMAL_TYPES.ROOSTER]: 1,   // Rooster moves slowly
+    [ANIMAL_TYPES.WOLF]: 3,      // Wolf moves fast
+    [ANIMAL_TYPES.LION]: 4,      // Lion moves fastest
+    [HUNTER_TYPE]: 1             // Hunter moves slowly but strategically
+};
+
+// ==================== HELPER FUNCTIONS ====================
+// Functions: Reusable code blocks
+// Each function performs a specific task and returns a result
+
+/**
+ * Random Position Generator
+ * Generates a random coordinate in the simulation area (500x500)
+ * 
+ * EXPLANATION: function keyword defines a function
+ * () contains parameters - this function takes no parameters
+ * {} contains the function's operations
+ * return = the value the function returns
+ * 
+ * @returns {number} Random number between 0-499
+ */
+export function getRandomPosition() {
+    // Math.random() = generates random decimal number between 0 and 1 (e.g. 0.7234)
+    // Math.random() * 500 = decimal number between 0 and 500 (e.g. 361.7)
+    // Math.floor() = rounds decimal down (e.g. 361.7 -> 361)
+    // Result: integer between 0-499
+    return Math.floor(Math.random() * 500); // Position 0-499 (500x500 area)
 }
 
 /**
- * Rastgele Cinsiyet Üretici
- * %50-50 şansla erkek veya dişi cinsiyet belirler
+ * Random Gender Generator
+ * Determines male or female gender with 50-50 chance
  * 
- * AÇIKLAMA: Şartlı operatör (ternary operator) kullanımı
- * koşul ? doğruysa_bu : yanlışsa_bu
+ * EXPLANATION: Using ternary operator (conditional operator)
+ * condition ? if_true : if_false
  * 
- * @returns {string} 'erkek' veya 'disi' değeri
+ * @returns {string} 'male' or 'female' value
  */
-export function rastgeleCinsiyetAl() {
-    // Math.random() < 0.5 = %50 şans true, %50 şans false
-    // ? işareti şartlı operatör başlangıcı
-    // true ise 'erkek', false ise 'disi' döndür
-    return Math.random() < 0.5 ? 'erkek' : 'disi';
+export function getRandomGender() {
+    // Math.random() < 0.5 = 50% chance true, 50% chance false
+    // ? marks start of conditional operator
+    // returns 'male' if true, 'female' if false
+    return Math.random() < 0.5 ? 'male' : 'female';
 }
 
 /**
- * İki Nokta Arası Mesafe Hesaplayıcı
- * Manhattan mesafesi kullanır (|x1-x2| + |y1-y2|)
- * Bu hesaplama simülasyonda performans için tercih edilir
+ * Distance Calculator Between Two Points
+ * Uses Manhattan distance (|x1-x2| + |y1-y2|)
+ * This calculation is preferred for performance in simulation
  * 
- * AÇIKLAMA: Fonksiyon parametreleri
- * (a, b) = Bu fonksiyon 2 parametre alır: a ve b
- * a ve b nesneler olmalı ve x, y özellikleri olmalı
- * Math.abs() = Mutlak değer alır (negatif sayıları pozitif yapar)
+ * EXPLANATION: Function parameters
+ * (a, b) = This function takes 2 parameters: a and b
+ * a and b must be objects with x, y properties
+ * Math.abs() = Takes absolute value (makes negative numbers positive)
  * 
- * @param {Object} a - İlk nesne (x, y koordinatları olan)
- * @param {Object} b - İkinci nesne (x, y koordinatları olan)
- * @returns {number} İki nokta arası mesafe
+ * @param {Object} a - First object (with x, y coordinates)
+ * @param {Object} b - Second object (with x, y coordinates)
+ * @returns {number} Distance between two points
  */
-export function mesafeHesapla(a, b) {
-    // a.x = a nesnesinin x özelliği
-    // b.x = b nesnesinin x özelliği
-    // Math.abs(a.x - b.x) = X koordinatları arası farkın mutlak değeri
-    // Math.abs(a.y - b.y) = Y koordinatları arası farkın mutlak değeri
-    // + ile ikisini topluyoruz (Manhattan mesafesi)
+export function calculateDistance(a, b) {
+    // a.x = x property of object a
+    // b.x = x property of object b
+    // Math.abs(a.x - b.x) = Absolute value of difference between X coordinates
+    // Math.abs(a.y - b.y) = Absolute value of difference between Y coordinates
+    // + adds them together (Manhattan distance)
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-// ==================== SINIFLAR (CLASSES) ====================
-// CLASS = Sınıf: Nesnelerin şablonunu tanımlar
-// Sınıftan yeni nesneler oluşturabiliriz (instance)
+// ==================== CLASSES ====================
+// CLASS: Defines the template for objects
+// We can create new objects (instances) from classes
 
 /**
- * Hayvan Sınıfı - Tüm hayvanların temel özelliklerini tanımlar
- * Bu sınıf simülasyondaki tüm hayvan türleri için kullanılır
+ * Animal Class - Defines the basic properties of all animals
+ * This class is used for all animal types in the simulation
  * 
- * AÇIKLAMA: Class bir şablon gibidir
- * Bu şablondan istediğimiz kadar hayvan nesnesi oluşturabiliriz
- * Her hayvan kendine özel x, y, enerji değerlerine sahip olur
+ * EXPLANATION: Class is like a template
+ * We can create as many animal objects as we want from this template
+ * Each animal will have its own x, y, energy values
  */
-export class Hayvan {
+export class Animal {
     /**
-     * Yeni bir hayvan oluşturur (Constructor = Yapıcı fonksiyon)
-     * AÇIKLAMA: constructor özel bir fonksiyondur
-     * Yeni nesne oluşturulurken otomatik çalışır
-     * new Hayvan() dendiğinde bu çalışır
+     * Creates a new animal (Constructor function)
+     * EXPLANATION: constructor is a special function
+     * It runs automatically when a new object is created
+     * This runs when new Animal() is called
      * 
-     * @param {string} tur - Hayvan türü (HAYVAN_TURLERI'nden biri)
-     * @param {string} cinsiyet - Hayvan cinsiyeti ('erkek' veya 'disi')
-     * @param {number} x - X koordinatı (0-499 arası)
-     * @param {number} y - Y koordinatı (0-499 arası)
+     * @param {string} type - Animal type (one from ANIMAL_TYPES)
+     * @param {string} gender - Animal gender ('male' or 'female')
+     * @param {number} x - X coordinate (0-499 range)
+     * @param {number} y - Y coordinate (0-499 range)
      */
-    constructor(tur, cinsiyet, x, y) {
-        // this = Bu nesne (oluşturulan hayvan nesnesi)
-        // this.tur = Bu nesnenin tur özelliği
-        // Gelen parametreleri nesnenin özelliklerine atıyoruz
-        this.tur = tur;               // Hayvan türü - dışarıdan gelen parametre
-        this.cinsiyet = cinsiyet;     // Hayvan cinsiyeti - dışarıdan gelen parametre
-        this.x = x;                   // X pozisyonu - dışarıdan gelen parametre
-        this.y = y;                   // Y pozisyonu - dışarıdan gelen parametre
-        this.enerji = 100;            // Başlangıç enerjisi (sabit değer - her hayvan 100 ile başlar)
-        this.hayatta = true;          // Hayat durumu (boolean - true/false)
+    constructor(type, gender, x, y) {
+        // this = This object (the created animal object)
+        // this.type = The type property of this object
+        // Assigning incoming parameters to object properties
+        this.type = type;               // Animal type - from external parameter
+        this.gender = gender;           // Animal gender - from external parameter
+        this.x = x;                     // X position - from external parameter
+        this.y = y;                     // Y position - from external parameter
+        this.energy = 100;              // Starting energy (fixed value - every animal starts with 100)
+        this.alive = true;              // Life status (boolean - true/false)
     }
 
     /**
-     * Hayvanın hareket etme fonksiyonu
-     * Her hayvan türü kendi hızında rastgele yönde hareket eder
-     * Hareket sırasında enerji tüketir ve sınırları kontrol eder
+     * Animal movement function
+     * Each animal type moves randomly in its own speed
+     * Uses energy during movement and checks boundaries
      * 
-     * AÇIKLAMA: Sınıf içindeki fonksiyon (method)
-     * Bu fonksiyon sadece hayvan nesneleri tarafından çağrılabilir
+     * EXPLANATION: Function inside a class (method)
+     * This function can only be called by animal objects
      * 
-     * @param {Object} avci - Avcı nesnesi (şu an kullanılmıyor)
-     * @param {Array} hayvanlar - Diğer hayvanlar listesi (şu an kullanılmıyor)
+     * @param {Object} hunter - Hunter object (currently unused)
+     * @param {Array} animals - List of other animals (currently unused)
      */
-    hareket(avci, hayvanlar) {
-        // Bu hayvanın türüne göre hareket mesafesini al
-        // HAREKET_MESAFELERI[this.tur] = Bu hayvanın türü için tanımlı hız
-        const hareketMesafesi = HAREKET_MESAFELERI[this.tur];
+    move(hunter, animals) {
+        // Get movement distance based on this animal's type
+        // MOVEMENT_DISTANCES[this.type] = Speed defined for this animal's type
+        const movementDistance = MOVEMENT_DISTANCES[this.type];
         
-        // 4 temel yön tanımla (sağ, aşağı, sol, yukarı)
-        // Array (dizi) - [] içinde değerleri liste halinde tutar
-        const dx = [0, 1, 0, -1];  // X yönündeki değişimler (sağ=+1, sol=-1, dikey=0)
-        const dy = [1, 0, -1, 0];  // Y yönündeki değişimler (aşağı=+1, yukarı=-1, yatay=0)
+        // Define 4 basic directions (right, down, left, up)
+        // Array - stores values in list format inside []
+        const dx = [0, 1, 0, -1];  // X direction changes (right=+1, left=-1, vertical=0)
+        const dy = [1, 0, -1, 0];  // Y direction changes (down=+1, up=-1, horizontal=0)
         
-        // 0, 1, 2 veya 3 değerlerinden birini rastgele seç
-        const yon = Math.floor(Math.random() * 4);  // Rastgele yön seç (0-3 arası)
+        // Randomly select one of 0, 1, 2, or 3
+        const direction = Math.floor(Math.random() * 4);  // Random direction (0-3)
         
-        // Belirtilen mesafe kadar seçilen yönde hareket et
-        // dx[yon] = Seçilen yöndeki x değişimi
-        // dy[yon] = Seçilen yöndeki y değişimi
-        // Math.max(0, ...) = 0'dan küçük olmasın
-        // Math.min(499, ...) = 499'dan büyük olmasın
-        this.x = Math.max(0, Math.min(499, this.x + dx[yon] * hareketMesafesi));
-        this.y = Math.max(0, Math.min(499, this.y + dy[yon] * hareketMesafesi));
+        // Move the specified distance in the selected direction
+        // dx[direction] = X change in selected direction
+        // dy[direction] = Y change in selected direction
+        // Math.max(0, ...) = Don't go below 0
+        // Math.min(499, ...) = Don't go above 499
+        this.x = Math.max(0, Math.min(499, this.x + dx[direction] * movementDistance));
+        this.y = Math.max(0, Math.min(499, this.y + dy[direction] * movementDistance));
         
-        // Enerji çok yavaş azalsın (her 10 harekette 1 enerji)
-        // Bu dengeli bir ekosistem için gerekli
-        // Math.random() < 0.1 = %10 şans ile true
+        // Energy decreases very slowly (1 energy every 10 moves)
+        // This is necessary for a balanced ecosystem
+        // Math.random() < 0.1 = 10% chance of true
         if (Math.random() < 0.1) {
-            // Math.max(0, ...) = Enerji 0'dan küçük olmasın
-            this.enerji = Math.max(0, this.enerji - 1);
+            // Math.max(0, ...) = Energy shouldn't go below 0
+            this.energy = Math.max(0, this.energy - 1);
         }
         
-        // Enerji biterse hayvan ölür
-        // === tam eşitlik kontrolü (tür ve değer aynı olmalı)
-        if (this.enerji === 0) this.hayatta = false;
+        // Animal dies when energy runs out
+        // === strict equality check (type and value must be same)
+        if (this.energy === 0) this.alive = false;
     }
 }
 
 /**
- * Avcı Sınıfı - İnsan avcısını temsil eder
- * Hayvanları avlayabilen özel bir karakter
+ * Hunter Class - Represents the human hunter
+ * A special character that can hunt animals
  * 
- * AÇIKLAMA: Bu da bir sınıf ama Hayvan sınıfından farklı
- * Avcının kendine özel özellikleri var
+ * EXPLANATION: This is also a class but different from Animal class
+ * Hunter has its own special properties
  */
-export class Avci {
+export class Hunter {
     /**
-     * Yeni bir avcı oluşturur
-     * AÇIKLAMA: Avcı constructor'ı daha basit - sadece konum alır
+     * Creates a new hunter
+     * EXPLANATION: Hunter constructor is simpler - only takes position
      * 
-     * @param {number} x - X koordinatı
-     * @param {number} y - Y koordinatı
+     * @param {number} x - X coordinate
+     * @param {number} y - Y coordinate
      */
     constructor(x, y) {
-        this.x = x;                  // X pozisyonu - dışarıdan gelen
-        this.y = y;                  // Y pozisyonu - dışarıdan gelen
-        this.gorusAlani = 8;         // Avcı 8 birim yakınlıktaki hayvanları görebilir ve avlayabilir
+        this.x = x;                  // X position - from external input
+        this.y = y;                  // Y position - from external input
+        this.visionRange = 8;        // Hunter can see and hunt animals within 8 units
     }
 
     /**
-     * Avcının hareket etme fonksiyonu
-     * Avcı yavaş ama stratejik hareket eder
+     * Hunter movement function
+     * Hunter moves slowly but strategically
      * 
-     * AÇIKLAMA: Hayvan hareket fonksiyonu ile benzer ama daha basit
-     * Avcı parametre almaz çünkü başka hiçbir şeye bağlı değil
+     * EXPLANATION: Similar to animal movement function but simpler
+     * Hunter takes no parameters because it doesn't depend on anything else
      */
-    hareket() {
-        // Avcı 1 birim hareket eder (stratejik hareket)
-        const dx = [0, 1, 0, -1];  // Yön değişimleri (aynı mantık)
+    move() {
+        // Hunter moves 1 unit (strategic movement)
+        const dx = [0, 1, 0, -1];  // Direction changes (same logic)
         const dy = [1, 0, -1, 0];
-        const yon = Math.floor(Math.random() * 4);  // Rastgele yön (0-3)
+        const direction = Math.floor(Math.random() * 4);  // Random direction (0-3)
         
-        // Sınırlar içinde hareket et
-        // HAREKET_MESAFELERI[AVCI_TURU] = Avcının hareket hızı (1)
-        this.x = Math.max(0, Math.min(499, this.x + dx[yon] * HAREKET_MESAFELERI[AVCI_TURU]));
-        this.y = Math.max(0, Math.min(499, this.y + dy[yon] * HAREKET_MESAFELERI[AVCI_TURU]));
+        // Move within boundaries
+        // MOVEMENT_DISTANCES[HUNTER_TYPE] = Hunter's movement speed (1)
+        this.x = Math.max(0, Math.min(499, this.x + dx[direction] * MOVEMENT_DISTANCES[HUNTER_TYPE]));
+        this.y = Math.max(0, Math.min(499, this.y + dy[direction] * MOVEMENT_DISTANCES[HUNTER_TYPE]));
     }
 }
 
-// ==================== İSTATİSTİKLER (STATISTICS) ====================
-// GLOBAL VARIABLES = Global Değişkenler: Dosyanın her yerinden erişilebilir
+// ==================== STATISTICS ====================
+// Global variables: Accessible from anywhere in the file
 
 /**
- * Simülasyon istatistikleri - Global değişkenler
- * Bu değişkenler simülasyon boyunca çeşitli olayları takip eder
+ * Simulation statistics - Global variables
+ * These variables track various events throughout the simulation
  * 
- * AÇIKLAMA: let ile değişken tanımlama
- * let = Değiştirilebilir değişken (const'ın aksine)
- * Bu sayılar simülasyon sırasında artacak
+ * EXPLANATION: Variable declaration with let
+ * let = Mutable variable (unlike const)
+ * These numbers will increase during simulation
  */
-let doganSayisi = 0;        // Toplam doğan hayvan sayısı - 0'dan başlar
-let avciOldurmeSayisi = 0;  // Avcının öldürdüğü hayvan sayısı - 0'dan başlar
-let aslanOldurmeSayisi = 0; // Aslanların öldürdüğü hayvan sayısı - 0'dan başlar
-let kurtOldurmeSayisi = 0;  // Kurtların öldürdüğü hayvan sayısı - 0'dan başlar
+let bornCount = 0;        // Total number of animals born - starts from 0
+let hunterKillCount = 0;  // Number of animals killed by hunter - starts from 0
+let lionKillCount = 0;    // Number of animals killed by lions - starts from 0
+let wolfKillCount = 0;    // Number of animals killed by wolves - starts from 0
 
 /**
- * İstatistikleri döndüren fonksiyon
- * Simülasyon sonunda veya ara raporlarda kullanılır
+ * Function that returns statistics
+ * Used at the end of simulation or for interim reports
  * 
- * AÇIKLAMA: Bu fonksiyon parametre almaz ama bir nesne döndürür
- * {} içinde anahtar: değer şeklinde nesne oluşturur
+ * EXPLANATION: This function takes no parameters but returns an object
+ * Creates object with key: value format inside {}
  * 
- * @returns {Object} Tüm istatistikleri içeren nesne
+ * @returns {Object} Object containing all statistics
  */
-export function istatistikleriAl() {
-    // Object return etme - birden fazla değeri tek seferde döndürür
+export function getStats() {
+    // Object return - returns multiple values at once
     return { 
-        doganSayisi,           // doganSayisi: doganSayisi ile aynı (ES6 kısayolu)
-        avciOldurmeSayisi,     // avciOldurmeSayisi: avciOldurmeSayisi ile aynı
-        aslanOldurmeSayisi,    // aslanOldurmeSayisi: aslanOldurmeSayisi ile aynı
-        kurtOldurmeSayisi      // kurtOldurmeSayisi: kurtOldurmeSayisi ile aynı
+        bornCount,           // bornCount: bornCount same as (ES6 shorthand)
+        hunterKillCount,     // hunterKillCount: hunterKillCount same as
+        lionKillCount,       // lionKillCount: lionKillCount same as
+        wolfKillCount        // wolfKillCount: wolfKillCount same as
     };
 }
 
 /**
- * İstatistikleri sıfırlayan fonksiyon
- * Yeni simülasyon başlatılırken kullanılır
+ * Function that resets statistics
+ * Used when starting a new simulation
  * 
- * AÇIKLAMA: Bu fonksiyon global değişkenleri 0'a resetler
- * Yeni simülasyon başlarken temiz başlamak için
+ * EXPLANATION: This function resets global variables to 0
+ * For a clean start when beginning new simulation
  */
-export function istatistikleriSifirla() {
-    // Global değişkenleri 0'a eşitle
-    doganSayisi = 0;           // = atama operatörü (yeni değer ver)
-    avciOldurmeSayisi = 0;
-    aslanOldurmeSayisi = 0;
-    kurtOldurmeSayisi = 0;
+export function resetStats() {
+    // Set global variables to 0
+    bornCount = 0;           // = assignment operator (give new value)
+    hunterKillCount = 0;
+    lionKillCount = 0;
+    wolfKillCount = 0;
 }
 
-// ==================== BAŞLANGIÇ POPÜLASYONU (INITIAL POPULATION) ====================
-// POPULATION = Popülasyon: Başlangıçta kaç hayvan olacağını belirler
+// ==================== INITIAL POPULATION ====================
+// Population: Determines how many animals there will be at the start
 
 /**
- * Başlangıç hayvan popülasyonunu oluşturan fonksiyon
- * Dengeli bir ekosistem için çeşitli hayvan türlerinden belirli sayıda oluşturur
+ * Function that creates the initial animal population
+ * Creates specific numbers of various animal types for a balanced ecosystem
  * 
- * AÇIKLAMA: Bu fonksiyon bir Array (dizi) döndürür
- * Array içinde Hayvan nesneleri olacak
- * [] = Boş array, push() ile eleman eklenir
+ * EXPLANATION: This function returns an Array
+ * Array will contain Animal objects
+ * [] = Empty array, elements added with push()
  * 
- * @returns {Array} Başlangıç hayvanları dizisi
+ * @returns {Array} Array of initial animals
  */
-export function hayvanlariBaslat() {
-    // Boş array oluştur - hayvanları buraya ekleyeceğiz
-    const hayvanlar = []; // [] = boş dizi
+export function initializeAnimals() {
+    // Create empty array - we'll add animals here
+    const animals = []; // [] = empty array
     
-    // KOYUNLAR - Otçul, temel besin kaynağı (15 çift = 30 adet)
-    // for döngüsü - belirli sayıda tekrar yapar
-    // for (başlangıç; koşul; artış) - i=0'dan başla, i<15 olana kadar, her seferde i'yi 1 artır
+    // SHEEP - Herbivores, basic food source (15 pairs = 30 animals)
+    // for loop - repeats a specific number of times
+    // for (start; condition; increment) - start from i=0, continue while i<15, increment i by 1 each time
     for (let i = 0; i < 15; i++) {
-        // Her türden eşit sayıda erkek ve dişi oluştur
-        // new Hayvan() = Yeni hayvan nesnesi oluştur
-        // push() = Array'e yeni eleman ekle
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.KOYUN, 'erkek', rastgelePozisyonAl(), rastgelePozisyonAl()));
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.KOYUN, 'disi', rastgelePozisyonAl(), rastgelePozisyonAl()));
+        // Create equal numbers of male and female of each type
+        // new Animal() = Create new animal object
+        // push() = Add new element to Array
+        animals.push(new Animal(ANIMAL_TYPES.SHEEP, 'male', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.SHEEP, 'female', getRandomPosition(), getRandomPosition()));
     }
     
-    // İNEKLER - Otçul, büyük hayvanlar (5 çift = 10 adet)
+    // COWS - Herbivores, large animals (5 pairs = 10 animals)
     for (let i = 0; i < 5; i++) {
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.INEK, 'erkek', rastgelePozisyonAl(), rastgelePozisyonAl()));
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.INEK, 'disi', rastgelePozisyonAl(), rastgelePozisyonAl()));
+        animals.push(new Animal(ANIMAL_TYPES.COW, 'male', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.COW, 'female', getRandomPosition(), getRandomPosition()));
     }
     
-    // TAVUKLAR - Omnivore, küçük hayvanlar (sadece dişi, 10 adet)
+    // CHICKENS - Omnivores, small animals (female only, 10 animals)
     for (let i = 0; i < 10; i++) {
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.TAVUK, 'disi', rastgelePozisyonAl(), rastgelePozisyonAl()));
+        animals.push(new Animal(ANIMAL_TYPES.CHICKEN, 'female', getRandomPosition(), getRandomPosition()));
     }
     
-    // HOROZLAR - Omnivore, küçük hayvanlar (sadece erkek, 10 adet)
+    // ROOSTERS - Omnivores, small animals (male only, 10 animals)
     for (let i = 0; i < 10; i++) {
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.HOROZ, 'erkek', rastgelePozisyonAl(), rastgelePozisyonAl()));
+        animals.push(new Animal(ANIMAL_TYPES.ROOSTER, 'male', getRandomPosition(), getRandomPosition()));
     }
     
-    // KURTLAR - Etçil avcılar (5 çift = 10 adet)
+    // WOLVES - Carnivore predators (5 pairs = 10 animals)
     for (let i = 0; i < 5; i++) {
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.KURT, 'erkek', rastgelePozisyonAl(), rastgelePozisyonAl()));
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.KURT, 'disi', rastgelePozisyonAl(), rastgelePozisyonAl()));
+        animals.push(new Animal(ANIMAL_TYPES.WOLF, 'male', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.WOLF, 'female', getRandomPosition(), getRandomPosition()));
     }
     
-    // ASLANLAR - En güçlü avcılar (4 çift = 8 adet)
+    // LIONS - Strongest predators (4 pairs = 8 animals)
     for (let i = 0; i < 4; i++) {
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.ASLAN, 'erkek', rastgelePozisyonAl(), rastgelePozisyonAl()));
-        hayvanlar.push(new Hayvan(HAYVAN_TURLERI.ASLAN, 'disi', rastgelePozisyonAl(), rastgelePozisyonAl()));
+        animals.push(new Animal(ANIMAL_TYPES.LION, 'male', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.LION, 'female', getRandomPosition(), getRandomPosition()));
     }
     
-    // Oluşturulan hayvanlar dizisini döndür
-    return hayvanlar;
+    // Return the created animals array
+    return animals;
 }
 
-// ==================== AFET/HASTALIK KONTROLÜ (DISASTER/DISEASE CONTROL) ====================
-// POPULATION CONTROL = Popülasyon Kontrolü: Çok fazla hayvan olursa hastalık çıkarır
+// ==================== DISASTER/DISEASE CONTROL ====================
+// Population control: Triggers disease if too many animals
 
 /**
- * Popülasyon kontrolü için afet/hastalık sistemi
- * Herhangi bir tür çok fazla çoğalırsa otomatik olarak hastalık çıkarır
- * Bu sistem ekosistemin dengesini korumak için kritiktir
+ * Disaster/disease system for population control
+ * Automatically triggers disease if any species becomes overpopulated
+ * This system is critical for maintaining ecosystem balance
  * 
- * AÇIKLAMA: Bu fonksiyon hayvan sayılarını kontrol eder
- * Bir tür çok fazla olursa bazılarını öldürür (hastalık simülasyonu)
+ * EXPLANATION: This function monitors animal counts
+ * If a species becomes too numerous, it kills some (disease simulation)
  * 
- * @param {Array} hayvanlar - Mevcut hayvanlar listesi
+ * @param {Array} animals - Current list of animals
  */
-export function gerekliiseAfetUygula(hayvanlar) {
-    // Her türden kaç hayvan olduğunu say
-    // {} = Boş nesne oluştur, burada sayıları tutacağız
-    const turSayilari = {};
+export function applyDisasterIfNeeded(animals) {
+    // Count how many animals of each type exist
+    // {} = Create empty object, will store counts here
+    const typeCounts = {};
     
-    // forEach = Array'deki her eleman için fonksiyon çalıştır
-    // (hayvan) => { } = Arrow function (ok fonksiyonu) - kısa fonksiyon yazma yöntemi
-    hayvanlar.forEach(hayvan => {
-        // Eğer bu türden daha önce saymadıysak, 0 ile başlat
-        // ! = Değil operatörü, turSayilari[hayvan.tur] yoksa true döner
-        if (!turSayilari[hayvan.tur]) turSayilari[hayvan.tur] = 0;
+    // forEach = Run function for each element in Array
+    // (animal) => { } = Arrow function - short way of writing functions
+    animals.forEach(animal => {
+        // If we haven't counted this type before, start with 0
+        // ! = Not operator, returns true if typeCounts[animal.type] doesn't exist
+        if (!typeCounts[animal.type]) typeCounts[animal.type] = 0;
         
-        // Hayvan hayattaysa sayıyı 1 artır
-        // ++ = 1 artır operatörü
-        if (hayvan.hayatta) turSayilari[hayvan.tur]++;
+        // If animal is alive, increment count by 1
+        // ++ = increment by 1 operator
+        if (animal.alive) typeCounts[animal.type]++;
     });
     
-    // Her tür için kontrol et
-    // Object.entries() = Nesneyi [anahtar, değer] çiftlerine çevirir
-    // forEach ile her çift üzerinde döner
-    Object.entries(turSayilari).forEach(([tur, sayi]) => {
-        // 100'den fazla olunca afet tetiklenir
-        // > = Büyüktür karşılaştırması
-        if (sayi > 100) {
-            // Console.log = Konsola mesaj yazdır (kullanıcıya bilgi ver)
-            // Template literal - `` içinde ${değişken} ile değişken kullanma
-            console.log(`⚠️ AFET/HASTALIK: ${tur} popülasyonu kritik seviyede (${sayi}), %20'si hastalandı!`);
+    // Check each type
+    // Object.entries() = Converts object to [key, value] pairs
+    // forEach loops through each pair
+    Object.entries(typeCounts).forEach(([type, count]) => {
+        // Disaster triggers when over 100
+        // > = Greater than comparison
+        if (count > 100) {
+            // Console.log = Print message to console (inform user)
+            // Template literal - use ${variable} inside `` to include variables
+            console.log(`⚠️ DISASTER/DISEASE: ${type} population at critical level (${count}), 20% got sick!`);
             
-            let oldurulenSayi = 0;  // Kaç hayvan öldürüldüğünü say
-            // Math.floor = Aşağı yuvarla, sayi * 0.2 = %20'si
-            const oldurmHedefi = Math.floor(sayi * 0.2); // %20'sini öldür
+            let killedCount = 0;  // Count how many animals were killed
+            // Math.floor = Round down, count * 0.2 = 20% of them
+            const killTarget = Math.floor(count * 0.2); // Kill 20%
             
-            // Rastgele hayvanları hastalıktan öldür
-            hayvanlar.forEach(hayvan => {
-                // && = Ve operatörü, tüm koşullar doğru olmalı
-                // < = Küçüktür karşılaştırması
-                if (hayvan.tur === tur && hayvan.hayatta && oldurulenSayi < oldurmHedefi && Math.random() < 0.25) {
-                    hayvan.hayatta = false;  // Hayvanı öldür
-                    oldurulenSayi++;         // Sayacı artır
+            // Randomly kill animals from disease
+            animals.forEach(animal => {
+                // && = And operator, all conditions must be true
+                // < = Less than comparison
+                if (animal.type === type && animal.alive && killedCount < killTarget && Math.random() < 0.25) {
+                    animal.alive = false;  // Kill the animal
+                    killedCount++;         // Increment counter
                 }
             });
             
-            console.log(`💀 ${oldurulenSayi} ${tur} hastalandı ve öldü.`);
+            console.log(`💀 ${killedCount} ${type} got sick and died.`);
         }
     });
 }
 
-// ==================== AVLANMA VE ÇİFTLEŞME (HUNTING AND MATING) ====================
-// HUNTING = Avlanma, MATING = Çiftleşme: Simülasyonun en önemli kısımları
+// ==================== HUNTING AND MATING ====================
+// Hunting and Mating: The most important parts of the simulation
 
 /**
- * Avlanma ve çiftleşme sistemini yöneten ana fonksiyon
- * Bu fonksiyon simülasyonun en kritik kısmıdır ve şu işlemleri yapar:
- * 1. Avcı avlanması
- * 2. Aslan avlanması
- * 3. Kurt avlanması  
- * 4. Çiftleşme işlemleri
+ * Main function that manages hunting and mating systems
+ * This function is the most critical part of the simulation and performs:
+ * 1. Hunter hunting
+ * 2. Lion hunting
+ * 3. Wolf hunting  
+ * 4. Mating processes
  * 
- * AÇIKLAMA: Bu fonksiyon çok karmaşık ama adım adım açıklayacağım
- * Her bölüm farklı bir işi yapıyor
+ * EXPLANATION: This function is very complex but I'll explain step by step
+ * Each section does a different job
  * 
- * @param {Array} hayvanlar - Mevcut hayvanlar listesi
- * @param {Object} avci - Avcı nesnesi
- * @returns {Array} Güncellenmiş hayvanlar listesi (ölüler çıkarılmış, yeni doğanlar eklenmiş)
+ * @param {Array} animals - Current list of animals
+ * @param {Object} hunter - Hunter object
+ * @returns {Array} Updated list of animals (dead removed, newborns added)
  */
-export function avlanVeCiftles(hayvanlar, avci) {
-    let yeniHayvanlar = [];           // Yeni doğacak hayvanlar listesi - boş başlar
-    let avlananIndeksler = new Set(); // Avlanan hayvanların indeksleri - Set = Tekrarsız liste
+export function huntAndMate(animals, hunter) {
+    let newAnimals = [];           // List of newborn animals - starts empty
+    let huntedIndices = new Set(); // Indices of hunted animals - Set = No duplicates list
     
-    // ========== AVCI AVLANMASI ==========
-    // Avcı en yakın hayvanı arar ve belirli şansla avlar
+    // ========== HUNTER HUNTING ==========
+    // Hunter searches for the closest animal and hunts with certain chance
     
-    // Avcının görüş alanından daha uzak mesafe ile başla
-    let enKisaMesafe = avci.gorusAlani + 1;  // Görüş alanından başla (9)
-    let enYakinIndeks = -1;                  // -1 = Henüz hayvan bulunamadı
+    // Start with distance farther than hunter's vision range
+    let shortestDistance = hunter.visionRange + 1;  // Start from vision range (9)
+    let closestIndex = -1;                          // -1 = No animal found yet
     
-    // Tüm hayvanları kontrol et ve en yakınını bul
-    // forEach ile her hayvanı kontrol et, (hayvan, i) = hayvan nesnesi ve index numarası
-    hayvanlar.forEach((hayvan, i) => {
-        // Ölü hayvanları atla - return = fonksiyondan çık
-        if (!hayvan.hayatta) return; // Ölü hayvanları atla
+    // Check all animals and find the closest one
+    // forEach checks each animal, (animal, i) = animal object and index number
+    animals.forEach((animal, i) => {
+        // Skip dead animals - return = exit function
+        if (!animal.alive) return; // Skip dead animals
         
-        // Bu hayvan ile avcı arasındaki mesafeyi hesapla
-        const mesafe = mesafeHesapla(avci, hayvan);
+        // Calculate distance between this animal and hunter
+        const distance = calculateDistance(hunter, animal);
         
-        // <= = Küçük eşit, && = Ve operatörü
-        // Hem görüş alanında hem de şu ana kadarki en yakın olmalı
-        if (mesafe <= avci.gorusAlani && mesafe < enKisaMesafe) {
-            enKisaMesafe = mesafe;    // Yeni en kısa mesafe
-            enYakinIndeks = i;        // Bu hayvanın index numarası
+        // <= = Less than or equal, && = And operator
+        // Must be both within vision range and closest so far
+        if (distance <= hunter.visionRange && distance < shortestDistance) {
+            shortestDistance = distance;    // New shortest distance
+            closestIndex = i;               // This animal's index number
         }
     });
     
-    // En yakın hayvanı %30 şans ile avla
-    // !== = Eşit değil karşılaştırması
-    // Math.random() < 0.3 = %30 şans
-    if (enYakinIndeks !== -1 && Math.random() < 0.3) {
-        hayvanlar[enYakinIndeks].hayatta = false;    // O hayvanı öldür
-        avlananIndeksler.add(enYakinIndeks);         // Set'e ekle (avlandı işareti)
-        avciOldurmeSayisi++;                         // İstatistik artır
+    // Hunt the closest animal with 30% chance
+    // !== = Not equal comparison
+    // Math.random() < 0.3 = 30% chance
+    if (closestIndex !== -1 && Math.random() < 0.3) {
+        animals[closestIndex].alive = false;    // Kill that animal
+        huntedIndices.add(closestIndex);        // Add to Set (hunted marker)
+        hunterKillCount++;                      // Increment statistics
     }
     
-    // ========== ASLAN AVLANMASI ==========
-    // Aslanlar koyun ve inek avlar
+    // ========== LION HUNTING ==========
+    // Lions hunt sheep and cows
     
-    // İç içe forEach döngüsü - her aslan için tüm hayvanları kontrol et
-    // Dış döngü: Tüm hayvanları gez (aslan arayacağız)
-    hayvanlar.forEach((hayvan, i) => {
-        if (!hayvan.hayatta) return; // Ölü hayvanları atla
+    // Nested forEach loop - check all animals for each lion
+    // Outer loop: Go through all animals (looking for lions)
+    animals.forEach((animal, i) => {
+        if (!animal.alive) return; // Skip dead animals
         
-        // Bu hayvan aslan mı?
-        if (hayvan.tur === HAYVAN_TURLERI.ASLAN) {
-            // İç döngü: Bu aslan için tüm potansiyel avları kontrol et
-            hayvanlar.forEach((av, j) => {
-                // Geçersiz durumları atla:
-                // - Av ölüyse atla
-                // - Kendisiyse atla (i === j)
-                // - Zaten avlanmışsa atla
-                if (!av.hayatta || i === j || avlananIndeksler.has(j)) return;
+        // Is this animal a lion?
+        if (animal.type === ANIMAL_TYPES.LION) {
+            // Inner loop: Check all potential prey for this lion
+            animals.forEach((prey, j) => {
+                // Skip invalid situations:
+                // - Skip if prey is dead
+                // - Skip if it's itself (i === j)
+                // - Skip if already hunted
+                if (!prey.alive || i === j || huntedIndices.has(j)) return;
                 
-                // Aslanlar sadece koyun ve inek avlar
-                // || = Veya operatörü
-                // <= = Küçük eşit karşılaştırması
-                if ((av.tur === HAYVAN_TURLERI.KOYUN || av.tur === HAYVAN_TURLERI.INEK) && 
-                    mesafeHesapla(hayvan, av) <= AVLANMA_MESAFELERI[HAYVAN_TURLERI.ASLAN]) {
+                // Lions only hunt sheep and cows
+                // || = Or operator
+                // <= = Less than or equal comparison
+                if ((prey.type === ANIMAL_TYPES.SHEEP || prey.type === ANIMAL_TYPES.COW) && 
+                    calculateDistance(animal, prey) <= HUNTING_DISTANCES[ANIMAL_TYPES.LION]) {
                     
-                    // %50 şans ile avla
+                    // Hunt with 50% chance
                     if (Math.random() < 0.5) {
-                        av.hayatta = false;              // Avı öldür
-                        avlananIndeksler.add(j);         // Avlandı işareti koy
-                        hayvan.enerji += 5;              // Avlayan aslanın enerjisi artar
-                        aslanOldurmeSayisi++;            // İstatistik artır
+                        prey.alive = false;              // Kill prey
+                        huntedIndices.add(j);            // Mark as hunted
+                        animal.energy += 5;              // Hunter lion gains energy
+                        lionKillCount++;                 // Increment statistics
                     }
                 }
             });
         }
     });
     
-    // ========== KURT AVLANMASI ==========
-    // Kurtlar koyun, tavuk ve horoz avlar (aslanlardan farklı av türleri)
-    hayvanlar.forEach((hayvan, i) => {
-        if (!hayvan.hayatta) return;
+    // ========== WOLF HUNTING ==========
+    // Wolves hunt sheep, chickens and roosters (different prey types than lions)
+    animals.forEach((animal, i) => {
+        if (!animal.alive) return;
         
-        // Bu hayvan kurt mu?
-        if (hayvan.tur === HAYVAN_TURLERI.KURT) {
-            hayvanlar.forEach((av, j) => {
-                if (!av.hayatta || i === j || avlananIndeksler.has(j)) return;
+        // Is this animal a wolf?
+        if (animal.type === ANIMAL_TYPES.WOLF) {
+            animals.forEach((prey, j) => {
+                if (!prey.alive || i === j || huntedIndices.has(j)) return;
                 
-                // Kurtlar koyun, tavuk ve horoz avlar (aslanlardan farklı)
-                if ((av.tur === HAYVAN_TURLERI.KOYUN || 
-                     av.tur === HAYVAN_TURLERI.TAVUK || 
-                     av.tur === HAYVAN_TURLERI.HOROZ) && 
-                    mesafeHesapla(hayvan, av) <= AVLANMA_MESAFELERI[HAYVAN_TURLERI.KURT]) {
+                // Wolves hunt sheep, chickens and roosters (different from lions)
+                if ((prey.type === ANIMAL_TYPES.SHEEP || 
+                     prey.type === ANIMAL_TYPES.CHICKEN || 
+                     prey.type === ANIMAL_TYPES.ROOSTER) && 
+                    calculateDistance(animal, prey) <= HUNTING_DISTANCES[ANIMAL_TYPES.WOLF]) {
                     
-                    // %50 şans ile avla
+                    // Hunt with 50% chance
                     if (Math.random() < 0.5) {
-                        av.hayatta = false;
-                        avlananIndeksler.add(j);
-                        hayvan.enerji += 5;  // Avlanan kurt enerji kazanır
-                        kurtOldurmeSayisi++;
+                        prey.alive = false;
+                        huntedIndices.add(j);
+                        animal.energy += 5;  // Hunting wolf gains energy
+                        wolfKillCount++;
                     }
                 }
             });
@@ -535,110 +535,111 @@ export function avlanVeCiftles(hayvanlar, avci) {
     });
 
     
-    // ========== ÇİFTLEŞME SİSTEMİ ==========
-    // Hayvanların çiftleşme işlemleri - yeni hayvan üretme
     
-    // Çiftleşen hayvanları takip et (bir hayvan sadece bir kez çiftleşebilir)
-    let ciftlesenIndeksler = new Set(); // Set = Tekrarsız liste
+    // ========== MATING SYSTEM ==========
+    // Animal mating processes - producing new animals
     
-    // İç içe for döngüsü - her hayvan çifti kontrol et
-    // Dış döngü: İlk hayvan
-    for (let i = 0; i < hayvanlar.length; i++) {
-        // Geçersiz durumları atla:
-        // - Ölüyse atla
-        // - Zaten çiftleştiyse atla  
-        // - Avlandıysa atla
-        if (!hayvanlar[i].hayatta || ciftlesenIndeksler.has(i) || avlananIndeksler.has(i)) continue;
+    // Track mated animals (an animal can only mate once)
+    let matedIndices = new Set(); // Set = No duplicates list
+    
+    // Nested for loops - check every animal pair
+    // Outer loop: First animal
+    for (let i = 0; i < animals.length; i++) {
+        // Skip invalid situations:
+        // - Skip if dead
+        // - Skip if already mated  
+        // - Skip if hunted
+        if (!animals[i].alive || matedIndices.has(i) || huntedIndices.has(i)) continue;
         
-        // Enerji kontrolü - düşük enerjili hayvanlar çiftleşemez
-        // continue = Bu döngü adımını atla, sonrakine geç
-        if (hayvanlar[i].enerji < 10) continue;
+        // Energy check - low energy animals can't mate
+        // continue = skip this loop iteration, go to next
+        if (animals[i].energy < 10) continue;
         
-        // İç döngü: İkinci hayvanı ara (j = i + 1 çünkü aynı çiftleri tekrar kontrol etmek istemiyoruz)
-        for (let j = i + 1; j < hayvanlar.length; j++) {
-            // İkinci hayvan için de aynı kontroller
-            if (!hayvanlar[j].hayatta || ciftlesenIndeksler.has(j) || avlananIndeksler.has(j)) continue;
-            if (hayvanlar[j].enerji < 10) continue; // Enerji kontrolü
+        // Inner loop: Search for second animal (j = i + 1 because we don't want to check same pairs again)
+        for (let j = i + 1; j < animals.length; j++) {
+            // Same checks for second animal
+            if (!animals[j].alive || matedIndices.has(j) || huntedIndices.has(j)) continue;
+            if (animals[j].energy < 10) continue; // Energy check
             
-            // Çiftleşme koşulları (hepsi aynı anda doğru olmalı):
-            // 1. Aynı tür olmalı (koyun-koyun, aslan-aslan vs.)
-            // 2. Farklı cinsiyet olmalı (erkek-dişi)
-            // 3. Yeterince yakın olmalı
-            // !== = Eşit değil karşılaştırması
-            if (hayvanlar[i].tur === hayvanlar[j].tur &&
-                hayvanlar[i].cinsiyet !== hayvanlar[j].cinsiyet &&
-                mesafeHesapla(hayvanlar[i], hayvanlar[j]) <= CIFTLESME_MESAFESI) {
+            // Mating conditions (all must be true simultaneously):
+            // 1. Same type (sheep-sheep, lion-lion etc.)
+            // 2. Different gender (male-female)
+            // 3. Close enough
+            // !== = Not equal comparison
+            if (animals[i].type === animals[j].type &&
+                animals[i].gender !== animals[j].gender &&
+                calculateDistance(animals[i], animals[j]) <= MATING_DISTANCE) {
                 
-                // Çiftleşme şansı %15 (dengeli çoğalma için)
-                // > 0.15 = %85 şansla çiftleşmeme (%15 şansla çiftleşme)
-                if (Math.random() > 0.15) continue; // Şansız, sonraki hayvanı dene
+                // Mating chance 15% (for balanced reproduction)
+                // > 0.15 = 85% chance no mating (15% chance mating)
+                if (Math.random() > 0.15) continue; // Unlucky, try next animal
                 
-                // Normal hayvanlar için çiftleşme (koyun, inek, kurt, aslan)
-                // includes() = Array içinde bu değer var mı kontrol eder
-                if ([HAYVAN_TURLERI.KOYUN, HAYVAN_TURLERI.INEK, HAYVAN_TURLERI.KURT, HAYVAN_TURLERI.ASLAN].includes(hayvanlar[i].tur)) {
-                    // Yeni hayvan iki ebeveynin ortasında doğar
-                    // Math.round() = En yakın tam sayıya yuvarla
-                    const yeniX = Math.round((hayvanlar[i].x + hayvanlar[j].x) / 2);
-                    const yeniY = Math.round((hayvanlar[i].y + hayvanlar[j].y) / 2);
+                // Mating for normal animals (sheep, cow, wolf, lion)
+                // includes() = Check if this value exists in Array
+                if ([ANIMAL_TYPES.SHEEP, ANIMAL_TYPES.COW, ANIMAL_TYPES.WOLF, ANIMAL_TYPES.LION].includes(animals[i].type)) {
+                    // New animal is born in the middle of two parents
+                    // Math.round() = Round to nearest integer
+                    const newX = Math.round((animals[i].x + animals[j].x) / 2);
+                    const newY = Math.round((animals[i].y + animals[j].y) / 2);
                     
-                    // Yeni hayvan oluştur ve listeye ekle
-                    yeniHayvanlar.push(new Hayvan(
-                        hayvanlar[i].tur,         // Ebeveynle aynı tür
-                        rastgeleCinsiyetAl(),     // Rastgele cinsiyet
-                        yeniX,                    // Hesaplanan X pozisyonu
-                        yeniY                     // Hesaplanan Y pozisyonu
+                    // Create new animal and add to list
+                    newAnimals.push(new Animal(
+                        animals[i].type,         // Same type as parent
+                        getRandomGender(),       // Random gender
+                        newX,                    // Calculated X position
+                        newY                     // Calculated Y position
                     ));
                     
-                    doganSayisi++;                    // İstatistik artır
-                    ciftlesenIndeksler.add(i);        // Bu hayvan çiftleşti
-                    ciftlesenIndeksler.add(j);        // Bu hayvan da çiftleşti
+                    bornCount++;                    // Increment statistics
+                    matedIndices.add(i);            // This animal mated
+                    matedIndices.add(j);            // This animal also mated
                     
-                    // Çiftleşen hayvanların enerjisi azalır (yorucu işlem)
-                    hayvanlar[i].enerji -= 3;
-                    hayvanlar[j].enerji -= 3;
-                    break; // Bu hayvan çiftleşti, başkasını ara (iç döngüden çık)
+                    // Mated animals lose energy (tiring process)
+                    animals[i].energy -= 3;
+                    animals[j].energy -= 3;
+                    break; // This animal mated, look for another (exit inner loop)
                     
-                } else if (hayvanlar[i].tur === HAYVAN_TURLERI.TAVUK || hayvanlar[i].tur === HAYVAN_TURLERI.HOROZ) {
-                    // Tavuk-Horoz çiftleşmesi özel durum (farklı türler çiftleşebilir)
-                    const yeniX = Math.round((hayvanlar[i].x + hayvanlar[j].x) / 2);
-                    const yeniY = Math.round((hayvanlar[i].y + hayvanlar[j].y) / 2);
+                } else if (animals[i].type === ANIMAL_TYPES.CHICKEN || animals[i].type === ANIMAL_TYPES.ROOSTER) {
+                    // Chicken-Rooster mating special case (different types can mate)
+                    const newX = Math.round((animals[i].x + animals[j].x) / 2);
+                    const newY = Math.round((animals[i].y + animals[j].y) / 2);
                     
-                    // %70 tavuk, %30 horoz doğma ihtimali
-                    // ? : = Şartlı operatör (ternary)
-                    const yeniTur = Math.random() < 0.7 ? HAYVAN_TURLERI.TAVUK : HAYVAN_TURLERI.HOROZ;
-                    const yeniCinsiyet = yeniTur === HAYVAN_TURLERI.TAVUK ? 'disi' : 'erkek';
+                    // 70% chicken, 30% rooster birth probability
+                    // ? : = Conditional operator (ternary)
+                    const newType = Math.random() < 0.7 ? ANIMAL_TYPES.CHICKEN : ANIMAL_TYPES.ROOSTER;
+                    const newGender = newType === ANIMAL_TYPES.CHICKEN ? 'female' : 'male';
                     
-                    yeniHayvanlar.push(new Hayvan(yeniTur, yeniCinsiyet, yeniX, yeniY));
+                    newAnimals.push(new Animal(newType, newGender, newX, newY));
                     
-                    doganSayisi++;
-                    ciftlesenIndeksler.add(i);
-                    ciftlesenIndeksler.add(j);
+                    bornCount++;
+                    matedIndices.add(i);
+                    matedIndices.add(j);
                     
-                    // Çiftleşen hayvanların enerjisi azalır
-                    hayvanlar[i].enerji -= 3;
-                    hayvanlar[j].enerji -= 3;
-                    break; // Bu hayvan çiftleşti, başkasını ara
+                    // Mated animals lose energy
+                    animals[i].energy -= 3;
+                    animals[j].energy -= 3;
+                    break; // This animal mated, look for another
                 }
             }
         }
     }
 
-    // ========== SONUÇLARI UYGULA ==========
-    // Avlanan ve ölü hayvanları çıkar, yeni doğanları ekle
+    // ========== APPLY RESULTS ==========
+    // Remove hunted and dead animals, add newborns
     
-    // filter() = Array'den koşulu sağlayan elemanları filtreler
-    // (hayvan, indeks) => ... = Her hayvan ve index numarası için fonksiyon
-    // ! = Değil operatörü
-    // avlananIndeksler.has(indeks) = Bu index avlananlar listesinde var mı?
-    // && = Ve operatörü - her iki koşul da doğru olmalı
-    hayvanlar = hayvanlar.filter((hayvan, indeks) => !avlananIndeksler.has(indeks) && hayvan.hayatta);
+    // filter() = Filters elements from Array that meet condition
+    // (animal, index) => ... = Function for each animal and index number
+    // ! = Not operator
+    // huntedIndices.has(index) = Is this index in the hunted list?
+    // && = And operator - both conditions must be true
+    animals = animals.filter((animal, index) => !huntedIndices.has(index) && animal.alive);
     
-    // ... = Spread operator - array'i elemanlarına ayırır
-    // push(...yeniHayvanlar) = yeniHayvanlar array'indeki tüm elemanları tek tek ekle
-    hayvanlar.push(...yeniHayvanlar);
+    // ... = Spread operator - separates array into its elements
+    // push(...newAnimals) = add all elements from newAnimals array one by one
+    animals.push(...newAnimals);
     
-    // Güncellenmiş hayvanlar listesini döndür
-    return hayvanlar;
+    // Return updated animals list
+    return animals;
 }
 
 // ==================== ANA SİMÜLASYON DÖNGÜSÜ (MAIN SIMULATION LOOP) ====================
