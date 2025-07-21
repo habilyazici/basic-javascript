@@ -151,7 +151,7 @@ export function applyDisasterIfNeeded(animals) {
     
     Object.entries(typeCounts).forEach(([type, count]) => {
         if (count > 100) {
-            console.log(`⚠️ DISASTER/DISEASE: ${type} population at critical level (${count}), 20% got sick!`);
+            console.log(`⚠️ AFET/HASTALIK: ${type} popülasyonu kritik seviyede (${count}), %20'si hastalandı!`);
             
             let killedCount = 0;
             const killTarget = Math.floor(count * 0.2);
@@ -163,7 +163,7 @@ export function applyDisasterIfNeeded(animals) {
                 }
             });
             
-            console.log(`💀 ${killedCount} ${type} got sick and died.`);
+            console.log(`💀 ${killedCount} ${type} hastalandı ve öldü.`);
         }
     });
 }
@@ -300,86 +300,86 @@ export function huntAndMate(animals, hunter) {
     return animals;
 }
 
-export function simulasyonuCalistir(hayvanlar, avci, hareketSayisi) {
-    for (let adim = 0; adim < hareketSayisi; adim++) {
-        applyDisasterIfNeeded(hayvanlar);
+export function runSimulation(animals, hunter, stepCount) {
+    for (let step = 0; step < stepCount; step++) {
+        applyDisasterIfNeeded(animals);
         
-        hayvanlar.forEach(hayvan => {
-            if (hayvan.alive) {
-                hayvan.move(avci, hayvanlar);
+        animals.forEach(animal => {
+            if (animal.alive) {
+                animal.move(hunter, animals);
             }
         });
         
-        avci.move();
+        hunter.move();
         
-        hayvanlar = huntAndMate(hayvanlar, avci);
+        animals = huntAndMate(animals, hunter);
         
-        hayvanlar = hayvanlar.filter(hayvan => hayvan.alive);
+        animals = animals.filter(animal => animal.alive);
     }
     
-    return hayvanlar;
+    return animals;
 }
 
 if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
     console.log("🌍 EKOSİSTEM SİMÜLASYONU BAŞLATIILIYOR...\n");
     
-    const hayvanlar = initializeAnimals();
+    const animals = initializeAnimals();
     
-    const avci = new Hunter(getRandomPosition(), getRandomPosition());
+    const hunter = new Hunter(getRandomPosition(), getRandomPosition());
     
     console.log("📊 BAŞLANGIÇ HAYVAN SAYILARI:");
     console.log("=" .repeat(40));
-    const baslangicSayilari = {};
-    hayvanlar.forEach(hayvan => {
-        baslangicSayilari[hayvan.type] = (baslangicSayilari[hayvan.type] || 0) + 1;
+    const initialCounts = {};
+    animals.forEach(animal => {
+        initialCounts[animal.type] = (initialCounts[animal.type] || 0) + 1;
     });
     
-    Object.entries(baslangicSayilari).forEach(([tur, sayi]) => {
-        console.log(`${tur.toUpperCase().padEnd(8)}: ${sayi.toString().padStart(3)} adet`);
+    Object.entries(initialCounts).forEach(([type, count]) => {
+        console.log(`${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} adet`);
     });
     console.log("-".repeat(40));
-    console.log(`TOPLAM  : ${hayvanlar.length.toString().padStart(3)} hayvan`);
-    console.log(`AVCI    : 1 adet (Pozisyon: ${avci.x}, ${avci.y})`);
+    console.log(`TOPLAM  : ${animals.length.toString().padStart(3)} hayvan`);
+    console.log(`AVCI    : 1 adet (Pozisyon: ${hunter.x}, ${hunter.y})`);
     
     console.log("\n🔄 SİMÜLASYON ÇALIŞIYOR... (1000 adım)");
     console.log("=" .repeat(50));
     
-    const zamanBaslangic = Date.now();
-    const sonHayvanlar = simulasyonuCalistir(hayvanlar, avci, 1000);
-    const zamanBitis = Date.now();
-    const gecenSure = zamanBitis - zamanBaslangic;
+    const startTime = Date.now();
+    const finalAnimals = runSimulation(animals, hunter, 1000);
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
     
     console.log("\n🏁 SİMÜLASYON TAMAMLANDI!");
     console.log("=" .repeat(50));
-    console.log(`⏱️  Geçen süre: ${gecenSure}ms`);
+    console.log(`⏱️  Geçen süre: ${elapsedTime}ms`);
     
     console.log("\n📈 HAYATTA KALAN HAYVAN SAYILARI:");
     console.log("=" .repeat(40));
-    const sonSayilar = {};
-    sonHayvanlar.forEach(hayvan => {
-        if (!hayvan.alive) return;
-        sonSayilar[hayvan.type] = (sonSayilar[hayvan.type] || 0) + 1;
+    const finalCounts = {};
+    finalAnimals.forEach(animal => {
+        if (!animal.alive) return;
+        finalCounts[animal.type] = (finalCounts[animal.type] || 0) + 1;
     });
     
-    Object.entries(sonSayilar).forEach(([tur, sayi]) => {
-        const baslangicSayisi = baslangicSayilari[tur] || 0;
-        const degisim = sayi - baslangicSayisi;
-        const degisimMetni = degisim > 0 ? `(+${degisim})` : `(${degisim})`;
-        const durum = degisim > 0 ? "📈" : degisim < 0 ? "📉" : "➡️ ";
+    Object.entries(finalCounts).forEach(([type, count]) => {
+        const initialCount = initialCounts[type] || 0;
+        const change = count - initialCount;
+        const changeText = change > 0 ? `(+${change})` : `(${change})`;
+        const status = change > 0 ? "📈" : change < 0 ? "📉" : "➡️ ";
         
-        console.log(`${tur.toUpperCase().padEnd(8)}: ${sayi.toString().padStart(3)} adet ${durum} ${degisimMetni}`);
+        console.log(`${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} adet ${status} ${changeText}`);
     });
     console.log("-".repeat(40));
-    console.log(`TOPLAM  : ${sonHayvanlar.length.toString().padStart(3)} hayvan`);
+    console.log(`TOPLAM  : ${finalAnimals.length.toString().padStart(3)} hayvan`);
     
     console.log("\n📊 DETAYLI İSTATİSTİKLER:");
     console.log("=" .repeat(40));
-    const istatistikler = getStats();
-    console.log(`🐣 Doğan hayvan sayısı    : ${istatistikler.bornCount}`);
-    console.log(`🏹 Avcının öldürdüğü      : ${istatistikler.hunterKillCount}`);
-    console.log(`🦁 Aslanların öldürdüğü   : ${istatistikler.lionKillCount}`);
-    console.log(`🐺 Kurtların öldürdüğü    : ${istatistikler.wolfKillCount}`);
-    console.log(`💀 Toplam ölüm           : ${istatistikler.hunterKillCount + istatistikler.lionKillCount + istatistikler.wolfKillCount}`);
+    const statistics = getStats();
+    console.log(`🐣 Doğan hayvan sayısı    : ${statistics.bornCount}`);
+    console.log(`🏹 Avcının öldürdüğü      : ${statistics.hunterKillCount}`);
+    console.log(`🦁 Aslanların öldürdüğü   : ${statistics.lionKillCount}`);
+    console.log(`🐺 Kurtların öldürdüğü    : ${statistics.wolfKillCount}`);
+    console.log(`💀 Toplam ölüm           : ${statistics.hunterKillCount + statistics.lionKillCount + statistics.wolfKillCount}`);
     
     console.log("\n🎯 SİMÜLASYON RAPORU TAMAMLANDI!");
 }
