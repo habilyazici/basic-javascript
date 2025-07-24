@@ -1,4 +1,4 @@
-export const ANIMAL_TYPES = {
+const ANIMAL_TYPES = {
     SHEEP: 'sheep',
     COW: 'cow',
     CHICKEN: 'chicken',
@@ -7,17 +7,17 @@ export const ANIMAL_TYPES = {
     LION: 'lion'
 };
 
-export const HUNTER_TYPE = 'hunter';
+const HUNTER_TYPE = 'hunter';
 
 
-export const HUNTING_DISTANCES = {
+const HUNTING_DISTANCES = {
     [ANIMAL_TYPES.WOLF]: 4,
     [ANIMAL_TYPES.LION]: 5
 };
 
-export const MATING_DISTANCE = 3;
+const MATING_DISTANCE = 3;
 
-export const MOVEMENT_DISTANCES = {
+const MOVEMENT_DISTANCES = {
     [ANIMAL_TYPES.SHEEP]: 2,
     [ANIMAL_TYPES.COW]: 2,
     [ANIMAL_TYPES.CHICKEN]: 1,
@@ -27,19 +27,19 @@ export const MOVEMENT_DISTANCES = {
     [HUNTER_TYPE]: 1
 };
 
-export function getRandomPosition() {
+function getRandomPosition() {
     return Math.floor(Math.random() * 500);
 }
 
-export function getRandomGender() {
+function getRandomGender() {
     return Math.random() < 0.5 ? 'male' : 'female';
 }
 
-export function calculateDistance(a, b) {
+function calculateDistance(a, b) {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-export class Animal {
+class Animal {
     constructor(type, gender, x, y) {
         this.type = type;
         this.gender = gender;
@@ -68,7 +68,7 @@ export class Animal {
     }
 }
 
-export class Hunter {
+class Hunter {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -90,7 +90,7 @@ let hunterKillCount = 0;
 let lionKillCount = 0;
 let wolfKillCount = 0;
 
-export function getStats() {
+function getStats() {
     return { 
         bornCount,
         hunterKillCount,
@@ -99,14 +99,14 @@ export function getStats() {
     };
 }
 
-export function resetStats() {
+function resetStats() {
     bornCount = 0;
     hunterKillCount = 0;
     lionKillCount = 0;
     wolfKillCount = 0;
 }
 
-export function initializeAnimals() {
+function initializeAnimals() {
     const animals = [];
     
     for (let i = 0; i < 15; i++) {
@@ -140,7 +140,7 @@ export function initializeAnimals() {
     return animals;
 }
 
-export function applyDisasterIfNeeded(animals) {
+function applyDisasterIfNeeded(animals) {
     const typeCounts = {};
     
     animals.forEach(animal => {
@@ -168,7 +168,7 @@ export function applyDisasterIfNeeded(animals) {
     });
 }
 
-export function huntAndMate(animals, hunter) {
+function huntAndMate(animals, hunter) {
     let newAnimals = [];
     let huntedIndices = new Set();
     
@@ -300,7 +300,7 @@ export function huntAndMate(animals, hunter) {
     return animals;
 }
 
-export function runSimulation(animals, hunter, stepCount) {
+function runSimulation(animals, hunter, stepCount) {
     for (let step = 0; step < stepCount; step++) {
         applyDisasterIfNeeded(animals);
         
