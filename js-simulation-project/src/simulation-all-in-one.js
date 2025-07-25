@@ -1,13 +1,13 @@
 const ANIMAL_TYPES = {
-    SHEEP: 'sheep',
-    COW: 'cow',
-    CHICKEN: 'chicken',
-    ROOSTER: 'rooster',
-    WOLF: 'wolf',
-    LION: 'lion'
+    SHEEP: 'Koyun',
+    COW: 'İnek',
+    CHICKEN: 'Tavuk',
+    ROOSTER: 'Horoz',
+    WOLF: 'Kurt',
+    LION: 'Aslan'
 };
 
-const HUNTER_TYPE = 'hunter';
+const HUNTER_TYPE = 'Avcı';
 const HUNTING_DISTANCES = {
     [ANIMAL_TYPES.WOLF]: 4,
     [ANIMAL_TYPES.LION]: 5
@@ -28,7 +28,7 @@ function getRandomPosition() {
 }
 
 function getRandomGender() {
-    return Math.random() < 0.5 ? 'male' : 'female';
+    return Math.random() < 0.5 ? 'erkek' : 'dişi';
 }
 
 function calculateDistance(a, b) {
@@ -71,6 +71,7 @@ class Animal {
             this.alive = false;
             energyDeaths++;
             typeStats[this.type].energyDeath++;
+            typeStats[this.type].died++;
         }
     }
 }
@@ -98,19 +99,19 @@ let lionKillCount = 0;
 let wolfKillCount = 0;
 let matingAttempts = 0;
 let successfulMatings = 0;
-let huntingAttempts = { hunter: 0, lion: 0, wolf: 0 };
+let huntingAttempts = { avcı: 0, aslan: 0, kurt: 0 };
 let energyDeaths = 0;
 let disasterDeaths = 0;
 let totalMovements = 0;
 let stepData = [];
 
 let typeStats = {
-    sheep: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
-    cow: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
-    chicken: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
-    rooster: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
-    wolf: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
-    lion: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 }
+    koyun: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+    inek: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+    tavuk: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+    horoz: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+    kurt: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+    aslan: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 }
 };
 
 function getStats() {
@@ -185,46 +186,52 @@ function resetStats() {
     wolfKillCount = 0;
     matingAttempts = 0;
     successfulMatings = 0;
-    huntingAttempts = { hunter: 0, lion: 0, wolf: 0 };
+    huntingAttempts = { avcı: 0, aslan: 0, kurt: 0 };
     energyDeaths = 0;
     disasterDeaths = 0;
     totalMovements = 0;
     stepData = [];
     
-    Object.keys(typeStats).forEach(type => {
-        typeStats[type] = { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 };
-    });
+    // Türkçe key'lerle sıfırla
+    typeStats = {
+        koyun: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+        inek: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+        tavuk: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+        horoz: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+        kurt: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
+        aslan: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 }
+    };
 }
 
 function initializeAnimals() {
     const animals = [];
     
     for (let i = 0; i < 15; i++) {
-        animals.push(new Animal(ANIMAL_TYPES.SHEEP, 'male', getRandomPosition(), getRandomPosition()));
-        animals.push(new Animal(ANIMAL_TYPES.SHEEP, 'female', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.SHEEP, 'erkek', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.SHEEP, 'dişi', getRandomPosition(), getRandomPosition()));
     }
     
     for (let i = 0; i < 5; i++) {
-        animals.push(new Animal(ANIMAL_TYPES.COW, 'male', getRandomPosition(), getRandomPosition()));
-        animals.push(new Animal(ANIMAL_TYPES.COW, 'female', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.COW, 'erkek', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.COW, 'dişi', getRandomPosition(), getRandomPosition()));
     }
     
     for (let i = 0; i < 10; i++) {
-        animals.push(new Animal(ANIMAL_TYPES.CHICKEN, 'female', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.CHICKEN, 'dişi', getRandomPosition(), getRandomPosition()));
     }
     
     for (let i = 0; i < 10; i++) {
-        animals.push(new Animal(ANIMAL_TYPES.ROOSTER, 'male', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.ROOSTER, 'erkek', getRandomPosition(), getRandomPosition()));
     }
     
     for (let i = 0; i < 5; i++) {
-        animals.push(new Animal(ANIMAL_TYPES.WOLF, 'male', getRandomPosition(), getRandomPosition()));
-        animals.push(new Animal(ANIMAL_TYPES.WOLF, 'female', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.WOLF, 'erkek', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.WOLF, 'dişi', getRandomPosition(), getRandomPosition()));
     }
     
     for (let i = 0; i < 4; i++) {
-        animals.push(new Animal(ANIMAL_TYPES.LION, 'male', getRandomPosition(), getRandomPosition()));
-        animals.push(new Animal(ANIMAL_TYPES.LION, 'female', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.LION, 'erkek', getRandomPosition(), getRandomPosition()));
+        animals.push(new Animal(ANIMAL_TYPES.LION, 'dişi', getRandomPosition(), getRandomPosition()));
     }
     
     return animals;
@@ -271,7 +278,7 @@ function huntAndMate(animals, hunter, currentStep) {
     });
     
     if (closestIndex !== -1) {
-        huntingAttempts.hunter++;
+        huntingAttempts.avcı++;
         if (Math.random() < 0.3) {
             animals[closestIndex].alive = false;
             huntedIndices.add(closestIndex);
@@ -289,7 +296,7 @@ function huntAndMate(animals, hunter, currentStep) {
                 
                 if ((prey.type === ANIMAL_TYPES.SHEEP || prey.type === ANIMAL_TYPES.COW) && 
                     calculateDistance(animal, prey) <= HUNTING_DISTANCES[ANIMAL_TYPES.LION]) {
-                    huntingAttempts.lion++;
+                    huntingAttempts.aslan++;
                     if (Math.random() < 0.5) {
                         prey.alive = false;
                         huntedIndices.add(j);
@@ -314,7 +321,7 @@ function huntAndMate(animals, hunter, currentStep) {
                      prey.type === ANIMAL_TYPES.CHICKEN || 
                      prey.type === ANIMAL_TYPES.ROOSTER) && 
                     calculateDistance(animal, prey) <= HUNTING_DISTANCES[ANIMAL_TYPES.WOLF]) {
-                    huntingAttempts.wolf++;
+                    huntingAttempts.kurt++;
                     if (Math.random() < 0.5) {
                         prey.alive = false;
                         huntedIndices.add(j);
@@ -367,7 +374,7 @@ function huntAndMate(animals, hunter, currentStep) {
                     const newX = Math.round((animals[i].x + animals[j].x) / 2);
                     const newY = Math.round((animals[i].y + animals[j].y) / 2);
                     const newType = Math.random() < 0.7 ? ANIMAL_TYPES.CHICKEN : ANIMAL_TYPES.ROOSTER;
-                    const newGender = newType === ANIMAL_TYPES.CHICKEN ? 'female' : 'male';
+                    const newGender = newType === ANIMAL_TYPES.CHICKEN ? 'dişi' : 'erkek';
                     const newAnimal = new Animal(newType, newGender, newX, newY);
                     newAnimal.birthStep = currentStep;
                     newAnimals.push(newAnimal);
@@ -470,6 +477,49 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
     console.log(`Doğum: ${advancedStats.totalBorn} | Ölüm: ${advancedStats.totalDeaths}`);
     console.log(`Avcı başarısı: %${advancedStats.huntingStats.hunterSuccessRate}`);
     console.log(`Üreme başarısı: %${advancedStats.breedingStats.breedingSuccessRate}`);
+    console.log(`Enerji ölümleri: ${energyDeaths} | Doğal afet ölümleri: ${disasterDeaths}`);
+    
+    // Zaman serisi grafiği için eksik fonksiyonları ekleyelim
+    function displayTimeSeriesChart(stepData, initialCounts) {
+        console.log("Adım    Toplam Pop.  Koyun   İnek    Tavuk   Horoz   Kurt    Aslan");
+        console.log("-".repeat(75));
+        stepData.forEach(data => {
+            const counts = data.counts;
+            const step = data.step.toString().padEnd(8);
+            const total = data.population.toString().padEnd(12);
+            const koyun = (counts.koyun || 0).toString().padEnd(8);
+            const inek = (counts.inek || 0).toString().padEnd(8);
+            const tavuk = (counts.tavuk || 0).toString().padEnd(8);
+            const horoz = (counts.horoz || 0).toString().padEnd(8);
+            const kurt = (counts.kurt || 0).toString().padEnd(8);
+            const aslan = (counts.aslan || 0).toString().padEnd(8);
+            console.log(`${step}${total}${koyun}${inek}${tavuk}${horoz}${kurt}${aslan}`);
+        });
+    }
+    
+    function displayPopulationTrends(stepData) {
+        if (stepData.length < 2) {
+            console.log("Trend analizi için yeterli veri yok.");
+            return;
+        }
+        
+        const firstData = stepData[0];
+        const lastData = stepData[stepData.length - 1];
+        
+        console.log("Tür      Başlangıç  Son Durum  Değişim    Trend");
+        console.log("-".repeat(55));
+        
+        Object.keys(ANIMAL_TYPES).forEach(key => {
+            const type = ANIMAL_TYPES[key];
+            const initial = firstData.counts[type] || 0;
+            const final = lastData.counts[type] || 0;
+            const change = final - initial;
+            const changeStr = change > 0 ? `+${change}` : change.toString();
+            const trend = change > 0 ? "↗️ Artan" : change < 0 ? "↘️ Azalan" : "→ Sabit";
+            
+            console.log(`${type.padEnd(8)} ${initial.toString().padEnd(10)} ${final.toString().padEnd(10)} ${changeStr.padEnd(10)} ${trend}`);
+        });
+    }
     
     // Zaman serisi grafiği gösterimi
     console.log("\n📊 ZAMAN SERİSİ ANALİZİ (Her 100 Adımda Popülasyon Değişimi)");

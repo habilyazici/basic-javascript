@@ -11,10 +11,8 @@ Basit bir ekosistem simülasyonu projesidir. Farklı hayvan türleri arasında a
 ## Kurulum ve Çalıştırma
 
 ```bash
-# Projeyi çalıştırın
 npm start
 
-# veya direkt olarak
 node src/simulation-all-in-one.js
 ```
 
