@@ -240,8 +240,6 @@ function applyDisasterIfNeeded(animals) {
     
     Object.entries(typeCounts).forEach(([type, count]) => {
         if (count > 100) {
-            console.log(`AFET/HASTALIK: ${type} popülasyonu kritik seviyede (${count}), %20'si etkilendi!`);
-            
             let killedCount = 0;
             const killTarget = Math.floor(count * 0.2);
             
@@ -253,8 +251,6 @@ function applyDisasterIfNeeded(animals) {
                     typeStats[type].died++;
                 }
             });
-            
-            console.log(`${killedCount} ${type} hastalandı ve öldü.`);
         }
     });
 }
@@ -431,37 +427,30 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
     console.log("EKOSİSTEM SİMÜLASYONU BAŞLATILIYOR...\n");
     
     const animals = initializeAnimals();
-    
     const hunter = new Hunter(getRandomPosition(), getRandomPosition());
     
-    console.log("BAŞLANGIÇ HAYVAN SAYILARI:");
-    console.log("=" .repeat(40));
+    console.log("BAŞLANGIÇ POPÜLASYONU:");
+    console.log("=" .repeat(30));
     const initialCounts = {};
     animals.forEach(animal => {
         initialCounts[animal.type] = (initialCounts[animal.type] || 0) + 1;
     });
     
     Object.entries(initialCounts).forEach(([type, count]) => {
-        console.log(`${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} adet`);
+        console.log(`${type.toUpperCase().padEnd(8)}: ${count} adet`);
     });
-    console.log("-".repeat(40));
-    console.log(`TOPLAM  : ${animals.length.toString().padStart(3)} hayvan`);
-    console.log(`AVCISI  : 1 adet (Konum: ${hunter.x}, ${hunter.y})`);
+    console.log(`TOPLAM  : ${animals.length} hayvan + 1 avcı`);
     
     console.log("\nSİMÜLASYON ÇALIŞIYOR... (1000 adım)");
-    console.log("=" .repeat(50));
-    
     const startTime = Date.now();
     const finalAnimals = runSimulation(animals, hunter, 1000);
     const endTime = Date.now();
-    const elapsedTime = endTime - startTime;
     
     console.log("\nSİMÜLASYON TAMAMLANDI!");
-    console.log("=" .repeat(50));
-    console.log(`Geçen süre: ${elapsedTime}ms`);
+    console.log("=" .repeat(30));
+    console.log(`Süre: ${endTime - startTime}ms`);
     
-    console.log("\nHAYATTA KALAN HAYVAN SAYILARI:");
-    console.log("=" .repeat(40));
+    console.log("\nSON DURUM:");
     const finalCounts = {};
     finalAnimals.forEach(animal => {
         if (!animal.alive) return;
@@ -472,85 +461,23 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
         const initialCount = initialCounts[type] || 0;
         const change = count - initialCount;
         const changeText = change > 0 ? `(+${change})` : `(${change})`;
-        const status = change > 0 ? "ARTIŞ" : change < 0 ? "AZALIŞ" : "AYNI";
-        
-        console.log(`${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} adet ${status} ${changeText}`);
+        console.log(`${type.toUpperCase().padEnd(8)}: ${count} adet ${changeText}`);
     });
-    console.log("-".repeat(40));
-    console.log(`TOPLAM  : ${finalAnimals.length.toString().padStart(3)} hayvan`);
+    console.log(`TOPLAM  : ${finalAnimals.length} hayvan`);
     
-    console.log("\nGELİŞMİŞ İSTATİSTİKLER:");
-    console.log("=" .repeat(60));
     const advancedStats = getAdvancedStats(finalAnimals, 1000);
+    console.log("\nÖZET İSTATİSTİKLER:");
+    console.log(`Doğum: ${advancedStats.totalBorn} | Ölüm: ${advancedStats.totalDeaths}`);
+    console.log(`Avcı başarısı: %${advancedStats.huntingStats.hunterSuccessRate}`);
+    console.log(`Üreme başarısı: %${advancedStats.breedingStats.breedingSuccessRate}`);
     
-    console.log("GENEL BİLGİLER:");
-    console.log(`Toplam doğum               : ${advancedStats.totalBorn}`);
-    console.log(`Toplam ölüm                : ${advancedStats.totalDeaths}`);
-    console.log(`Mevcut popülasyon          : ${advancedStats.currentPopulation}`);
+    // Zaman serisi grafiği gösterimi
+    console.log("\n📊 ZAMAN SERİSİ ANALİZİ (Her 100 Adımda Popülasyon Değişimi)");
+    console.log("=" .repeat(80));
+    displayTimeSeriesChart(stepData, initialCounts);
     
-    console.log("\nAV PERFORMANSI:");
-    console.log(`Avcı başarı oranı          : %${advancedStats.huntingStats.hunterSuccessRate} (${advancedStats.huntingStats.hunterKills}/${advancedStats.huntingStats.hunterAttempts})`);
-    console.log(`Aslan başarı oranı         : %${advancedStats.huntingStats.lionSuccessRate} (${advancedStats.huntingStats.lionKills}/${advancedStats.huntingStats.lionAttempts})`);
-    console.log(`Kurt başarı oranı          : %${advancedStats.huntingStats.wolfSuccessRate} (${advancedStats.huntingStats.wolfKills}/${advancedStats.huntingStats.wolfAttempts})`);
-    
-    console.log("\nÜREME İSTATİSTİKLERİ:");
-    console.log(`Çiftleşme denemeleri       : ${advancedStats.breedingStats.matingAttempts}`);
-    console.log(`Başarılı çiftleşmeler      : ${advancedStats.breedingStats.successfulMatings}`);
-    console.log(`Üreme başarı oranı         : %${advancedStats.breedingStats.breedingSuccessRate}`);
-    
-    console.log("\nYAŞAM İSTATİSTİKLERİ:");
-    console.log(`Ortalama enerji seviyesi   : ${advancedStats.lifeStats.averageEnergy}`);
-    console.log(`Ortalama yaş               : ${advancedStats.lifeStats.averageAge} adım`);
-    console.log(`En yaşlı hayvan           : ${advancedStats.lifeStats.oldestAnimal} adım`);
-    console.log(`Enerji tükenmesi ölümleri  : ${advancedStats.lifeStats.energyDeaths}`);
-    console.log(`Afet/hastalık ölümleri     : ${advancedStats.lifeStats.disasterDeaths}`);
-    
-    console.log("\nTÜR BAZLI DETAYLAR:");
-    Object.entries(advancedStats.typeDetails).forEach(([type, stats]) => {
-        if (stats.born > 0 || stats.died > 0) {
-            console.log(`${type.toUpperCase().padEnd(8)}: Doğum=${stats.born} | Ölüm=${stats.died} | Avlandı=${stats.hunted} | Enerji ölümü=${stats.energyDeath} | Max Pop=${stats.maxPopulation}`);
-        }
-    });
-    
-    if (stepData.length > 0) {
-        console.log("\nPOPÜLASYON EĞİLİMİ ANALİZİ:");
-        console.log("=" .repeat(80));
-        
-        const lastSnapshots = stepData.slice(-10);
-        lastSnapshots.forEach((snapshot, index) => {
-            const prevSnapshot = index > 0 ? lastSnapshots[index - 1] : stepData[0];
-            const popChange = snapshot.population - prevSnapshot.population;
-            const changeText = popChange > 0 ? `(+${popChange})` : popChange < 0 ? `(${popChange})` : "(0)";
-            const trend = popChange > 0 ? "↗" : popChange < 0 ? "↘" : "→";
-            
-            console.log(`Adım ${snapshot.step.toString().padStart(4)}: ${snapshot.population.toString().padStart(3)} hayvan ${trend} ${changeText}`);
-        
-            const typeDetails = [];
-            Object.entries(snapshot.counts).forEach(([type, count]) => {
-                if (count > 0) {
-                    typeDetails.push(`${type}: ${count}`);
-                }
-            });
-            
-            if (typeDetails.length > 0) {
-                console.log(`              └─ ${typeDetails.join(' | ')}`);
-            }
-        });
-        
-        const firstSnapshot = stepData[0];
-        const lastSnapshot = stepData[stepData.length - 1];
-        const totalChange = lastSnapshot.population - firstSnapshot.population;
-        const percentageChange = ((totalChange / firstSnapshot.population) * 100).toFixed(1);
-        
-        console.log("\nGENEL EĞİLİM ÖZETI:");
-        console.log(`Başlangıç popülasyonu      : ${firstSnapshot.population} hayvan`);
-        console.log(`Son popülasyon             : ${lastSnapshot.population} hayvan`);
-        console.log(`Net değişim                : ${totalChange > 0 ? '+' : ''}${totalChange} hayvan (%${percentageChange})`);
-
-        const maxPop = Math.max(...stepData.map(s => s.population));
-        const minPop = Math.min(...stepData.map(s => s.population));
-        console.log(`En yüksek popülasyon       : ${maxPop} hayvan`);
-        console.log(`En düşük popülasyon        : ${minPop} hayvan`);
-    }
-    console.log("\nSİMÜLASYON RAPORU TAMAMLANDI!");
+    // Detaylı popülasyon trendleri
+    console.log("\n📈 POPÜLASYON TRENDLERİ:");
+    console.log("=" .repeat(50));
+    displayPopulationTrends(stepData);
 }

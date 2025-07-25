@@ -1,17 +1,12 @@
 {
   "name": "js-simulation-project",
   "version": "1.0.0",
-  "type": "module",
-  "description": "",
-  "main": "index.js",
+  "description": "JavaScript ecosystem simulation project",
+  "main": "src/simulation-all-in-one.js",
   "scripts": {
-    "test": "node test.js",
-    "start": "node src/simulation-all-in-one.js",
-    "simulate": "node src/simulation-all-in-one.js",
-    "debug": "node debug.js",
-    "debug-long": "node -e \"import('./debug.js').then(m => m.debugSimulation(20))\""
+    "start": "node src/simulation-all-in-one.js"
   },
-  "keywords": [],
+  "keywords": ["simulation", "ecosystem", "javascript"],
   "author": "",
   "license": "ISC"
 }
