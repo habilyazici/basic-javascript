@@ -1,33 +1,3 @@
-/**
- * ECOSYSTEM SIMULATION - Advanced Wildlife Population Dynamics Model
- * 
- * This comprehensive simulation models complex interactions between various animal species
- * in a controlled ecosystem environment. The system demonstrates advanced programming
- * concepts including object-oriented design, statistical analysis, and algorithmic thinking.
- * 
- * Features:
- * - Multi-species population dynamics (Herbivores, Carnivores, Omnivores)
- * - Hunting behaviors with success rate calculations
- * - Breeding mechanics with energy requirements
- * - Disaster management and population control
- * - Advanced statistical tracking and analysis
- * - Real-time population trend monitoring
- * 
- * Technical Implementation:
- * - JavaScript ES6+ features (Classes, Arrow functions, Destructuring)
- * - Complex algorithms for spatial calculations and behavior modeling
- * - Comprehensive data analysis and reporting system
- * - Performance optimized simulation loop
- * 
- * @author Habil Yazıcı
- * @version 2.0
- * @date 2025
- */
-
-// ============================================================================
-// CONFIGURATION CONSTANTS
-// ============================================================================
-
 const ANIMAL_TYPES = {
     SHEEP: 'sheep',
     COW: 'cow',
@@ -38,144 +8,65 @@ const ANIMAL_TYPES = {
 };
 
 const HUNTER_TYPE = 'hunter';
-
-// Predator hunting range configurations
 const HUNTING_DISTANCES = {
-    [ANIMAL_TYPES.WOLF]: 4,    // Wolves: Medium range hunters
-    [ANIMAL_TYPES.LION]: 5     // Lions: Long range apex predators
+    [ANIMAL_TYPES.WOLF]: 4,
+    [ANIMAL_TYPES.LION]: 5
 };
-
-// Breeding proximity requirements
 const MATING_DISTANCE = 3;
-
-// Species-specific movement capabilities
 const MOVEMENT_DISTANCES = {
-    [ANIMAL_TYPES.SHEEP]: 2,     // Moderate herbivore mobility
-    [ANIMAL_TYPES.COW]: 2,       // Large herbivore, steady movement
-    [ANIMAL_TYPES.CHICKEN]: 1,   // Small bird, limited range
-    [ANIMAL_TYPES.ROOSTER]: 1,   // Small bird, limited range
-    [ANIMAL_TYPES.WOLF]: 3,      // Agile predator, high mobility
-    [ANIMAL_TYPES.LION]: 4,      // Apex predator, maximum mobility
-    [HUNTER_TYPE]: 1             // Human hunter, strategic movement
+    [ANIMAL_TYPES.SHEEP]: 2,
+    [ANIMAL_TYPES.COW]: 2,
+    [ANIMAL_TYPES.CHICKEN]: 1,
+    [ANIMAL_TYPES.ROOSTER]: 1,
+    [ANIMAL_TYPES.WOLF]: 3,
+    [ANIMAL_TYPES.LION]: 4,
+    [HUNTER_TYPE]: 1
 };
 
-// Simulation environment constants
-const WORLD_SIZE = 500;
-const ENERGY_DECAY_CHANCE = 0.1;
-const HUNTER_VISION_RANGE = 8;
-const DISASTER_THRESHOLD = 100;
-const SNAPSHOT_INTERVAL = 100;
-
-// ============================================================================
-// UTILITY FUNCTIONS
-// ============================================================================
-
-/**
- * Generates a random position within the simulation world
- * @returns {number} Random coordinate between 0 and WORLD_SIZE-1
- */
 function getRandomPosition() {
-    return Math.floor(Math.random() * WORLD_SIZE);
+    return Math.floor(Math.random() * 500);
 }
 
-/**
- * Randomly determines gender for new animals
- * @returns {string} Either 'male' or 'female'
- */
 function getRandomGender() {
     return Math.random() < 0.5 ? 'male' : 'female';
 }
 
-/**
- * Calculates Manhattan distance between two entities
- * @param {Object} a First entity with x,y coordinates
- * @param {Object} b Second entity with x,y coordinates
- * @returns {number} Manhattan distance
- */
 function calculateDistance(a, b) {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-/**
- * Returns appropriate emoji for species visualization
- * @param {string} type Species type
- * @returns {string} Emoji representation
- */
-function getSpeciesEmoji(type) {
-    const emojiMap = {
-        sheep: '🐑',
-        cow: '🐄',
-        chicken: '🐔',
-        rooster: '🐓',
-        wolf: '🐺',
-        lion: '🦁'
-    };
-    return emojiMap[type] || '🐾';
-}
-
-// ============================================================================
-// CORE CLASSES
-// ============================================================================
-
-/**
- * Animal class representing all wildlife entities in the ecosystem
- * Features comprehensive lifecycle tracking and behavioral modeling
- */
 class Animal {
-    /**
-     * Creates a new animal instance
-     * @param {string} type - Species type from ANIMAL_TYPES
-     * @param {string} gender - 'male' or 'female'
-     * @param {number} x - Initial X coordinate
-     * @param {number} y - Initial Y coordinate
-     */
     constructor(type, gender, x, y) {
         this.type = type;
         this.gender = gender;
         this.x = x;
         this.y = y;
-        this.energy = 100;           // Starting energy level
-        this.alive = true;           // Vital status
-        this.age = 0;                // Age in simulation steps
-        this.birthStep = 0;          // Birth timestamp
-        this.totalDistance = 0;      // Cumulative movement distance
-        this.matingCount = 0;        // Number of successful reproductions
+        this.energy = 100;
+        this.alive = true;
+        this.age = 0;
+        this.birthStep = 0;
+        this.totalDistance = 0;
+        this.matingCount = 0;
     }
 
-    /**
-     * Handles animal movement and energy management
-     * Implements species-specific movement patterns and energy decay
-     * @param {Hunter} hunter - Hunter entity for potential interaction
-     * @param {Animal[]} animals - Array of all animals for environmental awareness
-     */
     move(hunter, animals) {
         const movementDistance = MOVEMENT_DISTANCES[this.type];
-        
-        // Movement directions: North, East, South, West
         const dx = [0, 1, 0, -1];
         const dy = [1, 0, -1, 0];
-        
         const direction = Math.floor(Math.random() * 4);
-        
-        // Track movement for statistics
         const oldX = this.x;
         const oldY = this.y;
         
-        // Apply movement with world boundaries
-        this.x = Math.max(0, Math.min(WORLD_SIZE - 1, this.x + dx[direction] * movementDistance));
-        this.y = Math.max(0, Math.min(WORLD_SIZE - 1, this.y + dy[direction] * movementDistance));
-        
-        // Update tracking statistics
+        this.x = Math.max(0, Math.min(499, this.x + dx[direction] * movementDistance));
+        this.y = Math.max(0, Math.min(499, this.y + dy[direction] * movementDistance));
         this.totalDistance += Math.abs(this.x - oldX) + Math.abs(this.y - oldY);
         totalMovements++;
         this.age++;
         
-        // Random energy decay simulation
-        if (Math.random() < ENERGY_DECAY_CHANCE) {
+        if (Math.random() < 0.1) {
             this.energy = Math.max(0, this.energy - 1);
         }
         
-        // Handle energy depletion death
         if (this.energy === 0) {
             this.alive = false;
             energyDeaths++;
@@ -184,64 +75,35 @@ class Animal {
     }
 }
 
-/**
- * Hunter class representing the human predator element
- * Implements advanced vision-based hunting strategies
- */
 class Hunter {
-    /**
-     * Creates a new hunter instance
-     * @param {number} x - Initial X coordinate
-     * @param {number} y - Initial Y coordinate
-     */
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.visionRange = HUNTER_VISION_RANGE;
+        this.visionRange = 8;
     }
 
-    /**
-     * Executes hunter movement with strategic positioning
-     * Hunters move more methodically than wild animals
-     */
     move() {
         const dx = [0, 1, 0, -1];
         const dy = [1, 0, -1, 0];
         const direction = Math.floor(Math.random() * 4);
         
-        this.x = Math.max(0, Math.min(WORLD_SIZE - 1, this.x + dx[direction] * MOVEMENT_DISTANCES[HUNTER_TYPE]));
-        this.y = Math.max(0, Math.min(WORLD_SIZE - 1, this.y + dy[direction] * MOVEMENT_DISTANCES[HUNTER_TYPE]));
+        this.x = Math.max(0, Math.min(499, this.x + dx[direction] * MOVEMENT_DISTANCES[HUNTER_TYPE]));
+        this.y = Math.max(0, Math.min(499, this.y + dy[direction] * MOVEMENT_DISTANCES[HUNTER_TYPE]));
     }
 }
 
-// ============================================================================
-// STATISTICAL TRACKING SYSTEM
-// ============================================================================
-
-// ============================================================================
-// STATISTICAL TRACKING SYSTEM
-// ============================================================================
-
-// Core demographic counters
 let bornCount = 0;
 let hunterKillCount = 0;
 let lionKillCount = 0;
 let wolfKillCount = 0;
-
-// Advanced behavioral analytics
 let matingAttempts = 0;
 let successfulMatings = 0;
-let huntingAttempts = { 
-    hunter: 0, 
-    lion: 0, 
-    wolf: 0 
-};
+let huntingAttempts = { hunter: 0, lion: 0, wolf: 0 };
 let energyDeaths = 0;
 let disasterDeaths = 0;
 let totalMovements = 0;
 let stepData = [];
 
-// Species-specific comprehensive statistics
 let typeStats = {
     sheep: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
     cow: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
@@ -250,10 +112,6 @@ let typeStats = {
     wolf: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 },
     lion: { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 }
 };
-
-// ============================================================================
-// ANALYTICS AND REPORTING FUNCTIONS
-// ============================================================================
 
 function getStats() {
     return { 
@@ -265,7 +123,6 @@ function getStats() {
 }
 
 function getAdvancedStats(animals, currentStep) {
-    // Mevcut popülasyon hesaplamaları
     const currentCounts = {};
     let totalEnergy = 0;
     let totalAge = 0;
@@ -280,7 +137,6 @@ function getAdvancedStats(animals, currentStep) {
             totalDistance += animal.totalDistance;
             oldestAnimal = Math.max(oldestAnimal, animal.age);
             
-            // Maksimum popülasyon güncelleme
             if (currentCounts[animal.type] > typeStats[animal.type].maxPopulation) {
                 typeStats[animal.type].maxPopulation = currentCounts[animal.type];
             }
@@ -290,12 +146,9 @@ function getAdvancedStats(animals, currentStep) {
     const aliveCount = animals.filter(a => a.alive).length;
     
     return {
-        // Temel istatistikler
         totalBorn: bornCount,
         totalDeaths: hunterKillCount + lionKillCount + wolfKillCount + energyDeaths + disasterDeaths,
         currentPopulation: aliveCount,
-        
-        // Avcılık istatistikleri
         huntingStats: {
             hunterKills: hunterKillCount,
             lionKills: lionKillCount,
@@ -307,15 +160,11 @@ function getAdvancedStats(animals, currentStep) {
             lionSuccessRate: huntingAttempts.lion > 0 ? (lionKillCount / huntingAttempts.lion * 100).toFixed(1) : 0,
             wolfSuccessRate: huntingAttempts.wolf > 0 ? (wolfKillCount / huntingAttempts.wolf * 100).toFixed(1) : 0
         },
-        
-        // Üreme istatistikleri
         breedingStats: {
             matingAttempts,
             successfulMatings,
             breedingSuccessRate: matingAttempts > 0 ? (successfulMatings / matingAttempts * 100).toFixed(1) : 0
         },
-        
-        // Yaşam istatistikleri
         lifeStats: {
             averageEnergy: aliveCount > 0 ? (totalEnergy / aliveCount).toFixed(1) : 0,
             averageAge: aliveCount > 0 ? (totalAge / aliveCount).toFixed(1) : 0,
@@ -324,11 +173,7 @@ function getAdvancedStats(animals, currentStep) {
             disasterDeaths,
             averageMovementDistance: aliveCount > 0 ? (totalDistance / aliveCount).toFixed(1) : 0
         },
-        
-        // Tür bazlı detaylar
         typeDetails: typeStats,
-        
-        // Popülasyon yoğunluğu
         populationDensity: (aliveCount / (500 * 500) * 10000).toFixed(4)
     };
 }
@@ -346,7 +191,6 @@ function resetStats() {
     totalMovements = 0;
     stepData = [];
     
-    // Tür istatistiklerini sıfırla
     Object.keys(typeStats).forEach(type => {
         typeStats[type] = { born: 0, died: 0, hunted: 0, energyDeath: 0, maxPopulation: 0 };
     });
@@ -391,13 +235,12 @@ function applyDisasterIfNeeded(animals) {
     
     animals.forEach(animal => {
         if (!typeCounts[animal.type]) typeCounts[animal.type] = 0;
-        
         if (animal.alive) typeCounts[animal.type]++;
     });
     
     Object.entries(typeCounts).forEach(([type, count]) => {
         if (count > 100) {
-            console.log(`AFET/HASTALIK: ${type} popülasyonu kritik seviyede (${count}), %20'si hastalandı!`);
+            console.log(`AFET/HASTALIK: ${type} popülasyonu kritik seviyede (${count}), %20'si etkilendi!`);
             
             let killedCount = 0;
             const killTarget = Math.floor(count * 0.2);
@@ -419,16 +262,12 @@ function applyDisasterIfNeeded(animals) {
 function huntAndMate(animals, hunter, currentStep) {
     let newAnimals = [];
     let huntedIndices = new Set();
-    
-    // Avcı avcılığı
     let shortestDistance = hunter.visionRange + 1;
     let closestIndex = -1;
     
     animals.forEach((animal, i) => {
         if (!animal.alive) return;
-        
         const distance = calculateDistance(hunter, animal);
-        
         if (distance <= hunter.visionRange && distance < shortestDistance) {
             shortestDistance = distance;
             closestIndex = i;
@@ -445,8 +284,6 @@ function huntAndMate(animals, hunter, currentStep) {
             typeStats[animals[closestIndex].type].died++;
         }
     }
-    
-    // Aslan avcılığı
     animals.forEach((animal, i) => {
         if (!animal.alive) return;
         
@@ -456,7 +293,6 @@ function huntAndMate(animals, hunter, currentStep) {
                 
                 if ((prey.type === ANIMAL_TYPES.SHEEP || prey.type === ANIMAL_TYPES.COW) && 
                     calculateDistance(animal, prey) <= HUNTING_DISTANCES[ANIMAL_TYPES.LION]) {
-                    
                     huntingAttempts.lion++;
                     if (Math.random() < 0.5) {
                         prey.alive = false;
@@ -471,7 +307,6 @@ function huntAndMate(animals, hunter, currentStep) {
         }
     });
     
-    // Kurt avcılığı
     animals.forEach((animal, i) => {
         if (!animal.alive) return;
         
@@ -483,7 +318,6 @@ function huntAndMate(animals, hunter, currentStep) {
                      prey.type === ANIMAL_TYPES.CHICKEN || 
                      prey.type === ANIMAL_TYPES.ROOSTER) && 
                     calculateDistance(animal, prey) <= HUNTING_DISTANCES[ANIMAL_TYPES.WOLF]) {
-                    
                     huntingAttempts.wolf++;
                     if (Math.random() < 0.5) {
                         prey.alive = false;
@@ -498,12 +332,10 @@ function huntAndMate(animals, hunter, currentStep) {
         }
     });
 
-    // Üreme
     let matedIndices = new Set();
     
     for (let i = 0; i < animals.length; i++) {
         if (!animals[i].alive || matedIndices.has(i) || huntedIndices.has(i)) continue;
-        
         if (animals[i].energy < 10) continue;
         
         for (let j = i + 1; j < animals.length; j++) {
@@ -516,19 +348,12 @@ function huntAndMate(animals, hunter, currentStep) {
                 
                 matingAttempts++;
                 if (Math.random() > 0.15) continue;
-                
                 successfulMatings++;
                 
                 if ([ANIMAL_TYPES.SHEEP, ANIMAL_TYPES.COW, ANIMAL_TYPES.WOLF, ANIMAL_TYPES.LION].includes(animals[i].type)) {
                     const newX = Math.round((animals[i].x + animals[j].x) / 2);
                     const newY = Math.round((animals[i].y + animals[j].y) / 2);
-                    
-                    const newAnimal = new Animal(
-                        animals[i].type,
-                        getRandomGender(),
-                        newX,
-                        newY
-                    );
+                    const newAnimal = new Animal(animals[i].type, getRandomGender(), newX, newY);
                     newAnimal.birthStep = currentStep;
                     newAnimals.push(newAnimal);
                     
@@ -536,7 +361,6 @@ function huntAndMate(animals, hunter, currentStep) {
                     typeStats[animals[i].type].born++;
                     matedIndices.add(i);
                     matedIndices.add(j);
-                    
                     animals[i].energy -= 3;
                     animals[j].energy -= 3;
                     animals[i].matingCount++;
@@ -546,10 +370,8 @@ function huntAndMate(animals, hunter, currentStep) {
                 } else if (animals[i].type === ANIMAL_TYPES.CHICKEN || animals[i].type === ANIMAL_TYPES.ROOSTER) {
                     const newX = Math.round((animals[i].x + animals[j].x) / 2);
                     const newY = Math.round((animals[i].y + animals[j].y) / 2);
-                    
                     const newType = Math.random() < 0.7 ? ANIMAL_TYPES.CHICKEN : ANIMAL_TYPES.ROOSTER;
                     const newGender = newType === ANIMAL_TYPES.CHICKEN ? 'female' : 'male';
-                    
                     const newAnimal = new Animal(newType, newGender, newX, newY);
                     newAnimal.birthStep = currentStep;
                     newAnimals.push(newAnimal);
@@ -558,7 +380,6 @@ function huntAndMate(animals, hunter, currentStep) {
                     typeStats[newType].born++;
                     matedIndices.add(i);
                     matedIndices.add(j);
-                    
                     animals[i].energy -= 3;
                     animals[j].energy -= 3;
                     animals[i].matingCount++;
@@ -568,10 +389,9 @@ function huntAndMate(animals, hunter, currentStep) {
             }
         }
     }
+    
     animals = animals.filter((animal, index) => !huntedIndices.has(index) && animal.alive);
-    
     animals.push(...newAnimals);
-    
     return animals;
 }
 
@@ -586,12 +406,9 @@ function runSimulation(animals, hunter, stepCount) {
         });
         
         hunter.move();
-        
         animals = huntAndMate(animals, hunter, step);
-        
         animals = animals.filter(animal => animal.alive);
         
-        // Her 100 adımda bir snapshot al
         if (step % 100 === 0) {
             const currentCounts = {};
             animals.forEach(animal => {
@@ -610,51 +427,41 @@ function runSimulation(animals, hunter, stepCount) {
     return animals;
 }
 
-// ============================================================================
-// MAIN SIMULATION EXECUTION
-// ============================================================================
-
 if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
-    console.log("╔══════════════════════════════════════════════════════════════╗");
-    console.log("║              ADVANCED ECOSYSTEM SIMULATION v2.0             ║");
-    console.log("║          Wildlife Population Dynamics & Analytics           ║");
-    console.log("╚══════════════════════════════════════════════════════════════╝\n");
+    console.log("EKOSİSTEM SİMÜLASYONU BAŞLATILIYOR...\n");
     
-    // Initialize ecosystem components
-    console.log("🔧 INITIALIZING ECOSYSTEM COMPONENTS...");
     const animals = initializeAnimals();
+    
     const hunter = new Hunter(getRandomPosition(), getRandomPosition());
     
-    // Display initial population statistics
-    console.log("\n📊 INITIAL POPULATION DISTRIBUTION:");
-    console.log("═".repeat(50));
+    console.log("BAŞLANGIÇ HAYVAN SAYILARI:");
+    console.log("=" .repeat(40));
     const initialCounts = {};
     animals.forEach(animal => {
         initialCounts[animal.type] = (initialCounts[animal.type] || 0) + 1;
     });
     
     Object.entries(initialCounts).forEach(([type, count]) => {
-        const emoji = getSpeciesEmoji(type);
-        console.log(`${emoji} ${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} individuals`);
+        console.log(`${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} adet`);
     });
-    console.log("─".repeat(50));
-    console.log(`🌍 TOTAL WILDLIFE : ${animals.length.toString().padStart(3)} animals`);
-    console.log(`👨‍🏫 HUNTER POSITION: (${hunter.x}, ${hunter.y})`);
+    console.log("-".repeat(40));
+    console.log(`TOPLAM  : ${animals.length.toString().padStart(3)} hayvan`);
+    console.log(`AVCISI  : 1 adet (Konum: ${hunter.x}, ${hunter.y})`);
     
-    console.log("\n⚡ EXECUTING SIMULATION... (1000 iterations)");
-    console.log("═".repeat(55));
+    console.log("\nSİMÜLASYON ÇALIŞIYOR... (1000 adım)");
+    console.log("=" .repeat(50));
     
     const startTime = Date.now();
     const finalAnimals = runSimulation(animals, hunter, 1000);
     const endTime = Date.now();
     const elapsedTime = endTime - startTime;
     
-    console.log("\n✅ SIMULATION COMPLETED SUCCESSFULLY!");
-    console.log("═".repeat(60));
-    console.log(`⏱️  Execution Time: ${elapsedTime}ms | Performance: ${(1000000 / elapsedTime).toFixed(0)} steps/sec`);
+    console.log("\nSİMÜLASYON TAMAMLANDI!");
+    console.log("=" .repeat(50));
+    console.log(`Geçen süre: ${elapsedTime}ms`);
     
-    console.log("\n🏆 FINAL POPULATION ANALYSIS:");
-    console.log("═".repeat(50));
+    console.log("\nHAYATTA KALAN HAYVAN SAYILARI:");
+    console.log("=" .repeat(40));
     const finalCounts = {};
     finalAnimals.forEach(animal => {
         if (!animal.alive) return;
@@ -665,45 +472,39 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
         const initialCount = initialCounts[type] || 0;
         const change = count - initialCount;
         const changeText = change > 0 ? `(+${change})` : `(${change})`;
-        const statusEmoji = change > 0 ? "📈" : change < 0 ? "📉" : "➡️";
-        const emoji = getSpeciesEmoji(type);
+        const status = change > 0 ? "ARTIŞ" : change < 0 ? "AZALIŞ" : "AYNI";
         
-        console.log(`${emoji} ${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} survivors ${statusEmoji} ${changeText}`);
+        console.log(`${type.toUpperCase().padEnd(8)}: ${count.toString().padStart(3)} adet ${status} ${changeText}`);
     });
-    console.log("─".repeat(50));
-    console.log(`🌍 TOTAL SURVIVORS: ${finalAnimals.length.toString().padStart(3)} animals`);
+    console.log("-".repeat(40));
+    console.log(`TOPLAM  : ${finalAnimals.length.toString().padStart(3)} hayvan`);
     
-    console.log("\n📊 COMPREHENSIVE ECOSYSTEM ANALYTICS:");
-    console.log("═".repeat(70));
+    console.log("\nGELİŞMİŞ İSTATİSTİKLER:");
+    console.log("=" .repeat(60));
     const advancedStats = getAdvancedStats(finalAnimals, 1000);
     
-    // Genel Bilgiler
     console.log("GENEL BİLGİLER:");
     console.log(`Toplam doğum               : ${advancedStats.totalBorn}`);
     console.log(`Toplam ölüm                : ${advancedStats.totalDeaths}`);
     console.log(`Mevcut popülasyon          : ${advancedStats.currentPopulation}`);
     
-    // Avcılık İstatistikleri
-    console.log("\nAVCILIK PERFORMANSI:");
+    console.log("\nAV PERFORMANSI:");
     console.log(`Avcı başarı oranı          : %${advancedStats.huntingStats.hunterSuccessRate} (${advancedStats.huntingStats.hunterKills}/${advancedStats.huntingStats.hunterAttempts})`);
     console.log(`Aslan başarı oranı         : %${advancedStats.huntingStats.lionSuccessRate} (${advancedStats.huntingStats.lionKills}/${advancedStats.huntingStats.lionAttempts})`);
     console.log(`Kurt başarı oranı          : %${advancedStats.huntingStats.wolfSuccessRate} (${advancedStats.huntingStats.wolfKills}/${advancedStats.huntingStats.wolfAttempts})`);
     
-    // Üreme İstatistikleri
     console.log("\nÜREME İSTATİSTİKLERİ:");
-    console.log(`Çiftleşme girişimi         : ${advancedStats.breedingStats.matingAttempts}`);
-    console.log(`Başarılı çiftleşme         : ${advancedStats.breedingStats.successfulMatings}`);
+    console.log(`Çiftleşme denemeleri       : ${advancedStats.breedingStats.matingAttempts}`);
+    console.log(`Başarılı çiftleşmeler      : ${advancedStats.breedingStats.successfulMatings}`);
     console.log(`Üreme başarı oranı         : %${advancedStats.breedingStats.breedingSuccessRate}`);
     
-    // Yaşam İstatistikleri
     console.log("\nYAŞAM İSTATİSTİKLERİ:");
     console.log(`Ortalama enerji seviyesi   : ${advancedStats.lifeStats.averageEnergy}`);
     console.log(`Ortalama yaş               : ${advancedStats.lifeStats.averageAge} adım`);
     console.log(`En yaşlı hayvan           : ${advancedStats.lifeStats.oldestAnimal} adım`);
-    console.log(`Enerji tükenmesi ölümü     : ${advancedStats.lifeStats.energyDeaths}`);
-    console.log(`Afet/hastalık ölümü        : ${advancedStats.lifeStats.disasterDeaths}`);
+    console.log(`Enerji tükenmesi ölümleri  : ${advancedStats.lifeStats.energyDeaths}`);
+    console.log(`Afet/hastalık ölümleri     : ${advancedStats.lifeStats.disasterDeaths}`);
     
-    // Tür Bazlı Detaylar
     console.log("\nTÜR BAZLI DETAYLAR:");
     Object.entries(advancedStats.typeDetails).forEach(([type, stats]) => {
         if (stats.born > 0 || stats.died > 0) {
@@ -711,7 +512,6 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
         }
     });
     
-    // Popülasyon Eğilimi (detaylı analiz)
     if (stepData.length > 0) {
         console.log("\nPOPÜLASYON EĞİLİMİ ANALİZİ:");
         console.log("=" .repeat(80));
@@ -724,8 +524,7 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
             const trend = popChange > 0 ? "↗" : popChange < 0 ? "↘" : "→";
             
             console.log(`Adım ${snapshot.step.toString().padStart(4)}: ${snapshot.population.toString().padStart(3)} hayvan ${trend} ${changeText}`);
-            
-            // Tür bazlı detaylar
+        
             const typeDetails = [];
             Object.entries(snapshot.counts).forEach(([type, count]) => {
                 if (count > 0) {
@@ -738,7 +537,6 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
             }
         });
         
-        // Genel eğilim analizi
         const firstSnapshot = stepData[0];
         const lastSnapshot = stepData[stepData.length - 1];
         const totalChange = lastSnapshot.population - firstSnapshot.population;
@@ -748,18 +546,11 @@ if (process.argv[1] && process.argv[1].endsWith('simulation-all-in-one.js')) {
         console.log(`Başlangıç popülasyonu      : ${firstSnapshot.population} hayvan`);
         console.log(`Son popülasyon             : ${lastSnapshot.population} hayvan`);
         console.log(`Net değişim                : ${totalChange > 0 ? '+' : ''}${totalChange} hayvan (%${percentageChange})`);
-        
-        // En yüksek ve en düşük popülasyon
+
         const maxPop = Math.max(...stepData.map(s => s.population));
         const minPop = Math.min(...stepData.map(s => s.population));
         console.log(`En yüksek popülasyon       : ${maxPop} hayvan`);
         console.log(`En düşük popülasyon        : ${minPop} hayvan`);
-        console.log(`🌍 Population Range Variation: ${maxPop - minPop} animals`);
     }
-    
-    console.log("\n" + "═".repeat(70));
-    console.log("🎯 ECOSYSTEM SIMULATION ANALYSIS COMPLETED");
-    console.log("   Advanced Wildlife Population Modeling Demonstration");
-    console.log("   Showcasing: OOP Design, Statistical Analysis, Algorithm Design");
-    console.log("═".repeat(70));
+    console.log("\nSİMÜLASYON RAPORU TAMAMLANDI!");
 }
